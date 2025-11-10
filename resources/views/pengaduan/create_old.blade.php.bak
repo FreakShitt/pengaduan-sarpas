@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Buat Pengaduan - Pengaduan Sarpas</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; }
+        
+        /* Sidebar sama seperti dashboard */
+        .sidebar { 
+            width: 260px; 
+            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%); 
+            height: 100vh; 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header { 
+            padding: 2rem 1.5rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h1 { 
+            margin: 0; 
+            font-size: 1.5rem; 
+            font-weight: 700;
+            color: white;
+        }
+        
+        .sidebar-header p { 
+            margin: 0.5rem 0 0 0; 
+            font-size: 0.875rem; 
+            opacity: 0.8;
+        }
+        
+        .nav-menu { 
+            flex: 1; 
+            padding: 1rem 0;
+        }
+        
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 0.875rem 1.5rem; 
+            color: rgba(255,255,255,0.8); 
+            text-decoration: none; 
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active { 
+            background: rgba(255,255,255,0.1); 
+            color: white;
+            border-left-color: #60a5fa;
+        }
+        
+        .nav-item svg { 
+            width: 20px; 
+            height: 20px; 
+            margin-right: 0.875rem;
+        }
+        
+        .logout-section { 
+            padding: 1rem 1.5rem; 
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logout-btn { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            width: 100%; 
+            padding: 0.75rem; 
+            background: rgba(239, 68, 68, 0.2); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .logout-btn:hover { 
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .logout-btn svg { 
+            width: 18px; 
+            height: 18px; 
+            margin-right: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-content { 
+            margin-left: 260px; 
+            min-height: 100vh;
+        }
+        
+        .header { 
+            background: white; 
+            padding: 1.5rem 2rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 { 
+            margin: 0; 
+            font-size: 1.875rem; 
+            color: #111827; 
+            font-weight: 700;
+        }
+        
+        .header p { 
+            margin: 0.25rem 0 0 0; 
+            color: #6b7280; 
+            font-size: 0.875rem;
+        }
+        
+        .content-area { 
+            padding: 2rem; 
+            max-width: 900px;
+        }
+        
+        /* Form Styles */
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .form-header h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            color: #111827;
+        }
+        
+        .form-header p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        
+        .form-group label .required {
+            color: #ef4444;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        select.form-control {
+            cursor: pointer;
+            background: white;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9fafb;
+        }
+        
+        .file-label:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .file-label.has-file {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+        
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+        }
+        
+        .file-text {
+            text-align: center;
+        }
+        
+        .file-text p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .file-text .file-name {
+            font-weight: 600;
+            color: #10b981;
+            margin-top: 0.5rem;
+        }
+        
+        .image-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f3f4f6;
+        }
+        
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        .help-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            .content-area { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>📋 Sarpas</h1>
+            <p>Sistem Pengaduan</p>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="{{ route('dashboard') }}" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Dashboard
+            </a>
+            
+            <a href="{{ route('pengaduan.index') }}" class="nav-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Pengaduan
+            </a>
+            
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                Laporan
+            </a>
+            
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Pengaturan
+            </a>
+        </nav>
+        
+        <div class="logout-section">
+            <a href="{{ route('logout') }}" class="logout-btn" onclick="return confirm('Yakin ingin logout?')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1>📝 Buat Pengaduan Baru</h1>
+            <p>Laporkan kerusakan sarana dan prasarana sekolah</p>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Form Pengaduan</h2>
+                    <p>Lengkapi form di bawah ini dengan detail yang jelas</p>
+                </div>
+
+                @if($errors->any())
+                <div class="alert alert-error">
+                    <strong>Terjadi kesalahan!</strong>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                <form action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data" id="pengaduanForm">
+                    @csrf
+
+                    <!-- Lokasi -->
+                    <div class="form-group">
+                        <label for="lokasi">
+                            Lokasi <span class="required">*</span>
+                        </label>
+                        <select name="lokasi" id="lokasi" class="form-control" required>
+                            <option value="">-- Pilih Lokasi --</option>
+                            @foreach($lokasi as $lok)
+                            <option value="{{ $lok }}" {{ old('lokasi') == $lok ? 'selected' : '' }}>{{ $lok }}</option>
+                            @endforeach
+                        </select>
+                        <p class="help-text">Pilih lokasi dimana kerusakan terjadi</p>
+                        <span class="error-message" id="lokasiError"></span>
+                    </div>
+
+                    <!-- Barang -->
+                    <div class="form-group">
+                        <label for="barang">
+                            Barang/Fasilitas <span class="required">*</span>
+                        </label>
+                        <select name="barang" id="barang" class="form-control" required disabled>
+                            <option value="">-- Pilih Lokasi Terlebih Dahulu --</option>
+                        </select>
+                        <p class="help-text">Pilih barang atau fasilitas yang rusak</p>
+                        <span class="error-message" id="barangError"></span>
+                    </div>
+
+                    <!-- Detail Laporan -->
+                    <div class="form-group">
+                        <label for="detail_laporan">
+                            Detail Laporan <span class="required">*</span>
+                        </label>
+                        <textarea name="detail_laporan" id="detail_laporan" class="form-control" required placeholder="Jelaskan kondisi kerusakan dengan detail...">{{ old('detail_laporan') }}</textarea>
+                        <p class="help-text">Minimal 10 karakter. Jelaskan kondisi kerusakan, dampak, dan urgensi perbaikan</p>
+                        <span class="error-message" id="detailError"></span>
+                    </div>
+
+                    <!-- Upload Gambar -->
+                    <div class="form-group">
+                        <label for="gambar">
+                            Foto Kerusakan
+                        </label>
+                        <div class="file-input-wrapper">
+                            <input type="file" name="gambar" id="gambar" class="file-input" accept="image/*">
+                            <label for="gambar" class="file-label" id="fileLabel">
+                                <div>
+                                    <svg class="file-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <div class="file-text">
+                                        <p><strong>Klik untuk upload foto</strong></p>
+                                        <p>atau drag and drop</p>
+                                        <p style="margin-top: 0.5rem; color: #9ca3af;">JPG, PNG (Max. 2MB)</p>
+                                        <p class="file-name" id="fileName"></p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="image-preview" id="imagePreview">
+                            <img id="previewImg" src="" alt="Preview">
+                        </div>
+                        <p class="help-text">Upload foto kerusakan untuk mempermudah verifikasi (opsional)</p>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a href="{{ route('pengaduan.index') }}" class="btn btn-secondary">
+                            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Batal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Kirim Pengaduan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lokasiSelect = document.getElementById('lokasi');
+            const barangSelect = document.getElementById('barang');
+            const gambarInput = document.getElementById('gambar');
+            const fileLabel = document.getElementById('fileLabel');
+            const fileName = document.getElementById('fileName');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+
+            // Load barang berdasarkan lokasi
+            lokasiSelect.addEventListener('change', function() {
+                const lokasi = this.value;
+                
+                console.log('Lokasi dipilih:', lokasi);
+                
+                if (lokasi) {
+                    // Show loading state
+                    barangSelect.innerHTML = '<option value="">Memuat data...</option>';
+                    barangSelect.disabled = true;
+
+                    // Get CSRF token
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    
+                    console.log('Fetching data untuk lokasi:', lokasi);
+                    
+                    // Fetch barang berdasarkan lokasi
+                    fetch(`/pengaduan/get-barang?lokasi=${encodeURIComponent(lokasi)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        credentials: 'same-origin'
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        console.log('Response headers:', response.headers);
+                        
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                console.error('Response text:', text);
+                                throw new Error(`HTTP error! status: ${response.status} - ${text}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Data received:', data);
+                        console.log('Data type:', typeof data);
+                        console.log('Is array:', Array.isArray(data));
+                        
+                        barangSelect.innerHTML = '<option value="">-- Pilih Barang/Fasilitas --</option>';
+                        
+                        if (Array.isArray(data) && data.length > 0) {
+                            data.forEach(barang => {
+                                console.log('Adding barang:', barang);
+                                barangSelect.innerHTML += `<option value="${barang}">${barang}</option>`;
+                            });
+                            barangSelect.disabled = false;
+                            console.log('Barang loaded successfully:', data.length, 'items');
+                        } else {
+                            console.warn('No data or invalid data format');
+                            barangSelect.innerHTML = '<option value="">Tidak ada data barang</option>';
+                            barangSelect.disabled = true;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        console.error('Error name:', error.name);
+                        console.error('Error message:', error.message);
+                        console.error('Error stack:', error.stack);
+                        
+                        barangSelect.innerHTML = '<option value="">-- Pilih Lokasi Terlebih Dahulu --</option>';
+                        barangSelect.disabled = true;
+                        alert('Gagal memuat data barang: ' + error.message + '\n\nSilakan cek Console (F12) untuk detail error.');
+                    });
+                } else {
+                    barangSelect.innerHTML = '<option value="">-- Pilih Lokasi Terlebih Dahulu --</option>';
+                    barangSelect.disabled = true;
+                }
+            });
+
+            // Preview gambar
+            gambarInput.addEventListener('change', function() {
+                const file = this.files[0];
+                
+                if (file) {
+                    // Validasi ukuran file (max 2MB)
+                    if (file.size > 2048 * 1024) {
+                        alert('Ukuran file terlalu besar! Maksimal 2MB');
+                        this.value = '';
+                        return;
+                    }
+
+                    // Validasi tipe file
+                    if (!file.type.match('image.*')) {
+                        alert('File harus berupa gambar!');
+                        this.value = '';
+                        return;
+                    }
+
+                    // Update label
+                    fileName.textContent = file.name;
+                    fileLabel.classList.add('has-file');
+
+                    // Show preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    fileName.textContent = '';
+                    fileLabel.classList.remove('has-file');
+                    imagePreview.style.display = 'none';
+                }
+            });
+
+            // Form validation
+            document.getElementById('pengaduanForm').addEventListener('submit', function(e) {
+                let isValid = true;
+
+                // Validate lokasi
+                if (!lokasiSelect.value) {
+                    document.getElementById('lokasiError').textContent = 'Lokasi harus dipilih';
+                    document.getElementById('lokasiError').classList.add('show');
+                    isValid = false;
+                } else {
+                    document.getElementById('lokasiError').classList.remove('show');
+                }
+
+                // Validate barang
+                if (!barangSelect.value) {
+                    document.getElementById('barangError').textContent = 'Barang/fasilitas harus dipilih';
+                    document.getElementById('barangError').classList.add('show');
+                    isValid = false;
+                } else {
+                    document.getElementById('barangError').classList.remove('show');
+                }
+
+                // Validate detail laporan
+                const detail = document.getElementById('detail_laporan').value;
+                if (detail.length < 10) {
+                    document.getElementById('detailError').textContent = 'Detail laporan minimal 10 karakter';
+                    document.getElementById('detailError').classList.add('show');
+                    isValid = false;
+                } else {
+                    document.getElementById('detailError').classList.remove('show');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Pengaduan - Pengaduan Sarpas</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f3f4f6; }
+        
+        /* Sidebar sama seperti dashboard */
+        .sidebar { 
+            width: 260px; 
+            background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%); 
+            height: 100vh; 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header { padding: 2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h1 { margin: 0; font-size: 1.5rem; font-weight: 700; color: white; }
+        .sidebar-header p { margin: 0.5rem 0 0 0; font-size: 0.875rem; opacity: 0.8; }
+        
+        .nav-menu { flex: 1; padding: 1rem 0; }
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 0.875rem 1.5rem; 
+            color: rgba(255,255,255,0.8); 
+            text-decoration: none; 
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover, .nav-item.active { 
+            background: rgba(255,255,255,0.1); 
+            color: white;
+            border-left-color: #60a5fa;
+        }
+        .nav-item svg { width: 20px; height: 20px; margin-right: 0.875rem; }
+        
+        .logout-section { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout-btn { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            width: 100%; 
+            padding: 0.75rem; 
+            background: rgba(239, 68, 68, 0.2); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .logout-btn:hover { background: rgba(239, 68, 68, 0.3); }
+        .logout-btn svg { width: 18px; height: 18px; margin-right: 0.5rem; }
+        
+        /* Main Content */
+        .main-content { margin-left: 260px; min-height: 100vh; }
+        .header { 
+            background: white; 
+            padding: 1.5rem 2rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-title h1 { margin: 0; font-size: 1.875rem; color: #111827; font-weight: 700; }
+        .header-title p { margin: 0.25rem 0 0 0; color: #6b7280; font-size: 0.875rem; }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .content-area { padding: 2rem; }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .pengaduan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .pengaduan-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .pengaduan-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .card-id {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.875rem;
+        }
+        
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-process { background: #dbeafe; color: #1e40af; }
+        .badge-completed { background: #d1fae5; color: #065f46; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        
+        .card-lokasi {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-barang {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-detail {
+            color: #374151;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .card-date {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-view {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+        .btn-view:hover {
+            background: #dbeafe;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            color: #d1d5db;
+        }
+        
+        .empty-state h3 {
+            margin: 0 0 0.5rem 0;
+            color: #374151;
+        }
+        
+        .empty-state p {
+            margin: 0 0 1.5rem 0;
+            color: #6b7280;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            .pengaduan-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>📋 Sarpas</h1>
+            <p>Sistem Pengaduan</p>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="{{ route('dashboard') }}" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Dashboard
+            </a>
+            
+            <a href="{{ route('pengaduan.index') }}" class="nav-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Pengaduan
+            </a>
+            
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                </svg>
+                Laporan
+            </a>
+            
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Pengaturan
+            </a>
+        </nav>
+        
+        <div class="logout-section">
+            <a href="{{ route('logout') }}" class="logout-btn" onclick="return confirm('Yakin ingin logout?')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h1>📝 Daftar Pengaduan</h1>
+                <p>Kelola dan pantau pengaduan Anda</p>
+            </div>
+            <a href="{{ route('pengaduan.create') }}" class="btn-primary">
+                <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Buat Pengaduan Baru
+            </a>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            @if(session('success'))
+            <div class="alert alert-success">
+                <strong>Berhasil!</strong> {{ session('success') }}
+            </div>
+            @endif
+
+            @if($pengaduans->count() > 0)
+            <div class="pengaduan-grid">
+                @foreach($pengaduans as $pengaduan)
+                <div class="pengaduan-card">
+                    <div class="card-header">
+                        <span class="card-id">#{{ str_pad($pengaduan->id, 4, '0', STR_PAD_LEFT) }}</span>
+                        <span class="badge badge-{{ $pengaduan->status }}">{{ ucfirst($pengaduan->status) }}</span>
+                    </div>
+                    
+                    <div class="card-lokasi">📍 {{ $pengaduan->lokasi }}</div>
+                    <div class="card-barang">🔧 {{ $pengaduan->barang }}</div>
+                    <div class="card-detail">{{ $pengaduan->detail_laporan }}</div>
+                    
+                    <div class="card-footer">
+                        <div class="card-date">
+                            {{ $pengaduan->created_at->format('d M Y, H:i') }}
+                        </div>
+                        <div class="card-actions">
+                            <a href="{{ route('pengaduan.show', $pengaduan->id) }}" class="btn-sm btn-view">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <div class="empty-state">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <h3>Belum Ada Pengaduan</h3>
+                <p>Anda belum memiliki pengaduan. Klik tombol di bawah untuk membuat pengaduan baru.</p>
+                <a href="{{ route('pengaduan.create') }}" class="btn-primary">
+                    <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Buat Pengaduan Pertama
+                </a>
+            </div>
+            @endif
+        </div>
+    </main>
+</body>
+</html>

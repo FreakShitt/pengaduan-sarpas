@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Pengaduan Sarpas</title>
+    @vite(['resources/css/dashboard.css'])
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Create Account</h2>
+                <p>Register to continue</p>
+            </div>
+            
+            <form class="login-form" action="{{ route('register.post') }}" method="POST">
+                @csrf
+                
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="text" id="nama_pengguna" name="nama_pengguna" required value="{{ old('nama_pengguna') }}">
+                        <label for="nama_pengguna">Nama Lengkap</label>
+                    </div>
+                    <span class="error-message">
+                        @error('nama_pengguna'){{ $message }}@enderror
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="text" id="username" name="username" required autocomplete="username" value="{{ old('username') }}">
+                        <label for="username">Username</label>
+                    </div>
+                    <span class="error-message">
+                        @error('username'){{ $message }}@enderror
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" required autocomplete="new-password">
+                        <label for="password">Password</label>
+                        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+                            <span class="toggle-icon"></span>
+                        </button>
+                    </div>
+                    <span class="error-message">
+                        @error('password'){{ $message }}@enderror
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <select id="role" name="role" required style="padding: 12px; width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+                            <option value="">-- Pilih Role --</option>
+                            <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru</option>
+                            <option value="siswa" {{ old('role') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                        </select>
+                    </div>
+                    <span class="error-message">
+                        @error('role'){{ $message }}@enderror
+                    </span>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Register</span>
+                    <span class="btn-loader"></span>
+                </button>
+            </form>
+
+            <div class="signup-link">
+                <p>Already have an account? <a href="{{ route('login') }}">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple password toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordInput = document.getElementById('password');
+            
+            if (passwordToggle && passwordInput) {
+                passwordToggle.addEventListener('click', function() {
+                    const type = passwordInput.type === 'password' ? 'text' : 'password';
+                    passwordInput.type = type;
+                    
+                    const icon = passwordToggle.querySelector('.toggle-icon');
+                    if (icon) {
+                        icon.classList.toggle('show-password', type === 'text');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

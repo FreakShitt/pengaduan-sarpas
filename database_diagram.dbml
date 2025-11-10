@@ -1,0 +1,130 @@
+// Database Schema untuk Sistem Pengaduan Sarana Prasarana
+// Buka di: https://dbdiagram.io/d
+// Paste kode ini untuk membuat diagram
+
+// Tabel User (Guru & Siswa)
+Table user {
+  id bigint [primary key, increment, note: 'Primary Key']
+  nama_pengguna varchar(255) [not null, note: 'Nama lengkap user']
+  username varchar(255) [unique, not null, note: 'Username untuk login']
+  password varchar(255) [not null, note: 'Password (hashed)']
+  role varchar(10) [not null, note: 'Role: guru, siswa']
+  remember_token varchar(100) [null, note: 'Remember me token']
+  created_at timestamp [note: 'Waktu dibuat']
+  updated_at timestamp [note: 'Waktu diupdate']
+  
+  Indexes {
+    username [unique]
+  }
+}
+
+// Tabel Pengaduan
+Table pengaduans {
+  id bigint [primary key, increment, note: 'Primary Key']
+  user_id integer [not null, note: 'ID user yang mengadukan']
+  lokasi varchar(255) [not null, note: 'Nama lokasi']
+  barang varchar(255) [not null, note: 'Nama barang/fasilitas']
+  is_temporary_item tinyint [default: 0, note: 'Barang sementara (belum terdaftar): 0=false, 1=true']
+  detail_laporan text [not null, note: 'Detail laporan pengaduan']
+  gambar varchar(255) [null, note: 'Nama file foto bukti']
+  status varchar(20) [default: 'diajukan', note: 'Status: diajukan, diproses, selesai, ditolak']
+  catatan_petugas text [null, note: 'Catatan dari petugas']
+  catatan_admin text [null, note: 'Catatan dari admin']
+  created_at timestamp [note: 'Waktu dibuat']
+  updated_at timestamp [note: 'Waktu diupdate']
+  
+  Indexes {
+    user_id
+    status
+    created_at
+  }
+}
+
+// Tabel Lokasi
+Table lokasi {
+  id bigint [primary key, increment, note: 'Primary Key']
+  nama_lokasi varchar(255) [not null, unique, note: 'Nama lokasi (Ruang Kelas, Lab, dll)']
+  deskripsi text [null, note: 'Deskripsi lokasi']
+  aktif boolean [default: true, note: 'Status aktif: true=aktif, false=nonaktif']
+  created_at timestamp [note: 'Waktu dibuat']
+  updated_at timestamp [note: 'Waktu diupdate']
+  
+  Indexes {
+    nama_lokasi [unique]
+    aktif
+  }
+}
+
+// Tabel Barang
+Table barang {
+  id bigint [primary key, increment, note: 'Primary Key']
+  nama_lokasi varchar(255) [not null, note: 'Nama lokasi tempat barang berada']
+  nama_barang varchar(255) [not null, note: 'Nama barang/fasilitas']
+  deskripsi text [null, note: 'Deskripsi barang']
+  aktif boolean [default: true, note: 'Status aktif: true=aktif, false=nonaktif']
+  created_at timestamp [note: 'Waktu dibuat']
+  updated_at timestamp [note: 'Waktu diupdate']
+  
+  Indexes {
+    nama_lokasi
+    aktif
+  }
+}
+
+// Tabel Item Request (Request Barang Baru)
+Table item_requests {
+  id bigint [primary key, increment, note: 'Primary Key']
+  nama_lokasi varchar(255) [not null, note: 'Nama lokasi untuk barang baru']
+  nama_barang varchar(255) [not null, note: 'Nama barang yang direquest']
+  deskripsi text [null, note: 'Deskripsi barang']
+  requested_by bigint [not null, note: 'ID user yang request']
+  status varchar(20) [default: 'pending', note: 'Status: pending, approved, rejected']
+  reviewed_by bigint [null, note: 'ID admin yang review']
+  review_note text [null, note: 'Catatan review dari admin']
+  created_at timestamp [note: 'Waktu dibuat']
+  updated_at timestamp [note: 'Waktu diupdate']
+  
+  Indexes {
+    requested_by
+    status
+    created_at
+  }
+}
+
+// Tabel Personal Access Tokens (untuk API Mobile)
+Table personal_access_tokens {
+  id bigint [primary key, increment, note: 'Primary Key']
+  tokenable_type varchar(255) [not null, note: 'Model type (User)']
+  tokenable_id bigint [not null, note: 'User ID']
+  name varchar(255) [not null, note: 'Token name']
+  token varchar(64) [unique, not null, note: 'Token hash']
+  abilities text [null, note: 'Token abilities/permissions']
+  last_used_at timestamp [null, note: 'Waktu terakhir digunakan']
+  expires_at timestamp [null, note: 'Waktu kadaluarsa']
+  created_at timestamp [note: 'Waktu dibuat']
+  updated_at timestamp [note: 'Waktu diupdate']
+  
+  Indexes {
+    (tokenable_type, tokenable_id)
+    token [unique]
+  }
+}
+
+// Relasi antar tabel
+
+// Pengaduan dibuat oleh User (One-to-Many)
+Ref: pengaduans.user_id > user.id
+
+// Item Request dibuat oleh User (One-to-Many)
+Ref: item_requests.requested_by > user.id
+
+// Item Request direview oleh User Admin (One-to-Many)
+Ref: item_requests.reviewed_by > user.id
+
+// Personal Access Token milik User (One-to-Many)
+Ref: personal_access_tokens.tokenable_id > user.id
+
+// Note: Relasi berikut menggunakan string comparison, bukan foreign key
+// - barang.nama_lokasi terkait dengan lokasi.nama_lokasi
+// - pengaduans.lokasi terkait dengan lokasi.nama_lokasi
+// - pengaduans.barang terkait dengan barang.nama_barang

@@ -1,0 +1,412 @@
+{
+  "info": {
+    "name": "Pengaduan Sarpras API",
+    "description": "API Collection untuk Flutter Mobile App",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/pengaduan-sarpas/public/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_pengguna\": \"Test Siswa\",\n  \"username\": \"testsiswa\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": ["{{base_url}}"],
+              "path": ["register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.environment.set(\"token\", jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testsiswa\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": ["{{base_url}}"],
+              "path": ["me"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile (Name & Username)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_pengguna\": \"Test Siswa Updated\",\n  \"username\": \"testsiswa_updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile (Password)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"password123\",\n  \"new_password\": \"newpassword456\",\n  \"new_password_confirmation\": \"newpassword456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Homepage",
+      "item": [
+        {
+          "name": "Get Homepage Data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/homepage",
+              "host": ["{{base_url}}"],
+              "path": ["homepage"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Master Data",
+      "item": [
+        {
+          "name": "Get Lokasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lokasi",
+              "host": ["{{base_url}}"],
+              "path": ["lokasi"]
+            }
+          }
+        },
+        {
+          "name": "Get Barang by Lokasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/barang?id_lokasi=1",
+              "host": ["{{base_url}}"],
+              "path": ["barang"],
+              "query": [
+                {
+                  "key": "id_lokasi",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pengaduan",
+      "item": [
+        {
+          "name": "Create Pengaduan (Normal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "id_lokasi",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "id_barang",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "keluhan",
+                  "value": "Barang rusak perlu diperbaiki",
+                  "type": "text"
+                },
+                {
+                  "key": "foto",
+                  "type": "file",
+                  "src": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/pengaduan",
+              "host": ["{{base_url}}"],
+              "path": ["pengaduan"]
+            }
+          }
+        },
+        {
+          "name": "Create Pengaduan (Temporary Item)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "id_lokasi",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "is_temporary_item",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "temporary_item_name",
+                  "value": "Whiteboard Baru",
+                  "type": "text"
+                },
+                {
+                  "key": "temporary_item_description",
+                  "value": "Whiteboard untuk kelas",
+                  "type": "text"
+                },
+                {
+                  "key": "keluhan",
+                  "value": "Butuh whiteboard baru untuk pembelajaran",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/pengaduan",
+              "host": ["{{base_url}}"],
+              "path": ["pengaduan"]
+            }
+          }
+        },
+        {
+          "name": "Get History (All)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pengaduan/history?status=all",
+              "host": ["{{base_url}}"],
+              "path": ["pengaduan", "history"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "all"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get History (By Status)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pengaduan/history?status=diajukan",
+              "host": ["{{base_url}}"],
+              "path": ["pengaduan", "history"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "diajukan"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Detail Pengaduan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pengaduan/1",
+              "host": ["{{base_url}}"],
+              "path": ["pengaduan", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

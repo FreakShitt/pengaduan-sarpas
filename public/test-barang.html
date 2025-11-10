@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Get Barang</title>
+</head>
+<body>
+    <h1>Test Get Barang API</h1>
+    
+    <label for="lokasi">Pilih Lokasi:</label>
+    <select id="lokasi">
+        <option value="">-- Pilih --</option>
+        <option value="Ruang Kelas">Ruang Kelas</option>
+        <option value="Laboratorium Komputer">Laboratorium Komputer</option>
+        <option value="Perpustakaan">Perpustakaan</option>
+    </select>
+    
+    <div id="result" style="margin-top: 20px; padding: 20px; background: #f0f0f0;">
+        <h3>Result:</h3>
+        <pre id="output">Pilih lokasi untuk melihat hasil...</pre>
+    </div>
+
+    <script>
+        document.getElementById('lokasi').addEventListener('change', function() {
+            const lokasi = this.value;
+            const output = document.getElementById('output');
+            
+            if (lokasi) {
+                output.textContent = 'Loading...';
+                
+                fetch(`/pengaduan/get-barang?lokasi=${encodeURIComponent(lokasi)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Response text:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        output.textContent = JSON.stringify(data, null, 2);
+                    } catch (e) {
+                        output.textContent = 'Parse error: ' + e.message + '\n\nRaw response:\n' + text;
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    output.textContent = 'Error: ' + error.message;
+                });
+            } else {
+                output.textContent = 'Pilih lokasi untuk melihat hasil...';
+            }
+        });
+    </script>
+</body>
+</html>
