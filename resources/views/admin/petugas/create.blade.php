@@ -5,333 +5,355 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Petugas - Admin</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
         }
 
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
+        /* Header Monochrome */
+        .mono-header {
+            background: #000000;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #000000;
         }
 
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-            padding: 2rem 0;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            overflow-y: auto;
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar-header {
-            padding: 0 2rem 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #c5975f;
-        }
-
-        .sidebar-subtitle {
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 300;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 0 1rem;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-        }
-
-        .nav-link:hover {
-            background: rgba(197, 151, 95, 0.1);
-            color: #c5975f;
-            transform: translateX(5px);
-        }
-
-        .nav-link.active {
-            background: linear-gradient(135deg, #c5975f 0%, #d4a76a 100%);
-            color: white;
-        }
-
-        .nav-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 1rem;
-        }
-
-        .main-content {
-            margin-left: 280px;
-            flex: 1;
-            padding: 2rem;
-        }
-
-        .page-header {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
-        }
-
-        .header-top {
+        .mono-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .page-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+        .mono-header h1 {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .mono-header nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .mono-header nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .mono-header nav a:hover {
+            opacity: 0.7;
         }
 
         .logout-btn {
-            background: linear-gradient(135deg, #c5975f 0%, #d4a76a 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
+            background: #ffffff;
+            color: #000000;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
             font-weight: 600;
+            transition: all 0.2s;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(197, 151, 95, 0.3);
+            background: #f0f0f0;
         }
 
-        .content-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        /* Container */
+        .mono-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .mono-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #000000;
+        }
+
+        .mono-hero h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            color: #000000;
+            margin-bottom: 0.5rem;
+        }
+
+        .mono-hero p {
+            font-size: 1.125rem;
+            color: #666666;
+            font-weight: 500;
+        }
+
+        /* Form Styles */
+        .mono-form {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 0;
+            padding: 2.5rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .form-label {
+        .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            color: #000000;
         }
 
-        .form-control {
+        .form-group label .required {
+            color: #000000;
+            margin-left: 4px;
+        }
+
+        .form-input {
             width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid #e8e8e8;
-            border-radius: 8px;
+            padding: 1rem;
+            border: 2px solid #000000;
+            background: #ffffff;
             font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #000000;
         }
 
-        .form-control:focus {
+        .form-input:focus {
             outline: none;
-            border-color: #c5975f;
-            box-shadow: 0 0 0 3px rgba(197, 151, 95, 0.1);
+            border-color: #000000;
+            background: #f9f9f9;
+        }
+
+        .form-input::placeholder {
+            color: #999999;
         }
 
         .error-message {
-            color: #dc2626;
+            color: #000000;
             font-size: 0.875rem;
+            font-weight: 600;
             margin-top: 0.5rem;
+            display: block;
         }
 
+        /* Form Actions */
         .form-actions {
             display: flex;
             gap: 1rem;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px solid #000000;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #c5975f 0%, #d4a76a 100%);
-            color: white;
-            padding: 0.875rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            flex: 1;
+            background: #000000;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border: 2px solid #000000;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(197, 151, 95, 0.3);
+            background: #ffffff;
+            color: #000000;
         }
 
         .btn-secondary {
-            background: #f5f5f5;
-            color: #333;
-            padding: 0.875rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            flex: 1;
+            background: #ffffff;
+            color: #000000;
+            padding: 1rem 2rem;
+            border: 2px solid #000000;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s;
+            text-align: center;
             text-decoration: none;
             display: inline-block;
         }
 
         .btn-secondary:hover {
-            background: #e8e8e8;
+            background: #000000;
+            color: #ffffff;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid #000000;
+            background: #f9f9f9;
+        }
+
+        .alert-error {
+            background: #fff5f5;
+        }
+
+        .alert strong {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert ul {
+            margin-left: 1.5rem;
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1 class="sidebar-title">Admin Panel</h1>
-                <p class="sidebar-subtitle">Sistem Pengaduan Sarpras</p>
-            </div>
+    <!-- Header Monochrome -->
+    <header class="mono-header">
+        <div class="mono-header-content">
+            <h1>ADMIN PANEL</h1>
             <nav>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                            </svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.petugas') }}" class="nav-link active">
-                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                            </svg>
-                            Kelola Petugas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.users') }}" class="nav-link">
-                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                            Kelola Pengguna
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.lokasi') }}" class="nav-link">
-                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                            Kelola Lokasi
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.barang') }}" class="nav-link">
-                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                            </svg>
-                            Kelola Barang
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.laporan') }}" class="nav-link">
-                            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            Laporan
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <div class="page-header">
-                <div class="header-top">
-                    <h1 class="page-title">Tambah Petugas Baru</h1>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="logout-btn">Logout</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="content-section">
-                <form action="{{ route('admin.petugas.store') }}" method="POST">
+                <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ route('admin.petugas.index') }}">Petugas</a>
+                <a href="{{ route('admin.users.index') }}">Users</a>
+                <a href="{{ route('admin.lokasi.index') }}">Lokasi</a>
+                <a href="{{ route('admin.barang.index') }}">Barang</a>
+                <a href="{{ route('admin.laporan') }}">Laporan</a>
+                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                     @csrf
-                    
-                    <div class="form-group">
-                        <label for="nama_pengguna" class="form-label">Nama Lengkap</label>
-                        <input type="text" id="nama_pengguna" name="nama_pengguna" class="form-control" 
-                               value="{{ old('nama_pengguna') }}" required>
-                        @error('nama_pengguna')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" 
-                               value="{{ old('username') }}" required>
-                        @error('username')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" required>
-                        @error('password')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">Simpan</button>
-                        <a href="{{ route('admin.petugas') }}" class="btn-secondary">Batal</a>
-                    </div>
+                    <button type="submit" class="logout-btn">Logout</button>
                 </form>
+            </nav>
+        </div>
+    </header>
+
+    <div class="mono-container">
+        <!-- Hero Section -->
+        <div class="mono-hero">
+            <h2>TAMBAH PETUGAS</h2>
+            <p>Tambahkan petugas baru ke sistem</p>
+        </div>
+
+        <!-- Error Messages -->
+        @if ($errors->any())
+            <div class="alert alert-error">
+                <strong>Terdapat kesalahan pada input:</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-        </main>
+        @endif
+
+        <!-- Form -->
+        <form action="{{ route('admin.petugas.store') }}" method="POST" class="mono-form">
+            @csrf
+            
+            <div class="form-group">
+                <label for="nama_pengguna">
+                    Nama Lengkap
+                    <span class="required">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="nama_pengguna" 
+                    name="nama_pengguna" 
+                    class="form-input" 
+                    value="{{ old('nama_pengguna') }}" 
+                    placeholder="Masukkan nama lengkap petugas"
+                    required
+                >
+                @error('nama_pengguna')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="username">
+                    Username
+                    <span class="required">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-input" 
+                    value="{{ old('username') }}" 
+                    placeholder="Username untuk login"
+                    required
+                >
+                @error('username')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Password
+                    <span class="required">*</span>
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Minimal 6 karakter"
+                    required
+                >
+                @error('password')
+                    <span class="error-message">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirmation">
+                    Konfirmasi Password
+                    <span class="required">*</span>
+                </label>
+                <input 
+                    type="password" 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    class="form-input" 
+                    placeholder="Ketik ulang password"
+                    required
+                >
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Simpan</button>
+                <a href="{{ route('admin.petugas.index') }}" class="btn-secondary">Batal</a>
+            </div>
+        </form>
     </div>
 </body>
 </html>

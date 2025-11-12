@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengaduan;
+use App\Models\Barang;
+use App\Models\Lokasi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -64,7 +66,16 @@ class PengaduanController extends Controller
 
     public function create()
     {
-        $lokasi = array_keys($this->lokasiBarang);
+        // Get lokasi from database
+        $lokasiFromDB = Lokasi::where('aktif', true)
+            ->pluck('nama_lokasi')
+            ->toArray();
+        
+        // Merge with hardcoded lokasi (for backward compatibility)
+        $lokasiHardcoded = array_keys($this->lokasiBarang);
+        $lokasi = array_unique(array_merge($lokasiFromDB, $lokasiHardcoded));
+        sort($lokasi);
+        
         return view('pengaduan.create', compact('lokasi'));
     }
 
@@ -87,7 +98,16 @@ class PengaduanController extends Controller
                 ], 400);
             }
             
-            $barang = $this->lokasiBarang[$lokasi] ?? [];
+            // Get barang from database instead of hardcoded array
+            $barang = Barang::where('nama_lokasi', $lokasi)
+                ->where('aktif', true)
+                ->pluck('nama_barang')
+                ->toArray();
+            
+            // Fallback to hardcoded array if no barang found in database
+            if (empty($barang)) {
+                $barang = $this->lokasiBarang[$lokasi] ?? [];
+            }
             
             \Log::info('Get Barang Response', [
                 'lokasi' => $lokasi,
@@ -114,10 +134,11 @@ class PengaduanController extends Controller
 
     public function store(Request $request)
     {
-        // Check if using temporary item
-        $isTemporaryItem = $request->has('temporary_item_name') && !empty($request->temporary_item_name);
+        // Check if using temporary item (barang baru yang belum terdaftar)
+        $isTemporaryItem = $request->filled('temporary_item_name');
 
         if ($isTemporaryItem) {
+            // Validasi untuk barang baru
             $validated = $request->validate([
                 'lokasi' => 'required|string',
                 'temporary_item_name' => 'required|string',
@@ -126,6 +147,7 @@ class PengaduanController extends Controller
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
             ]);
         } else {
+            // Validasi untuk barang yang sudah ada di daftar
             $validated = $request->validate([
                 'lokasi' => 'required|string',
                 'barang' => 'required|string',
@@ -139,7 +161,7 @@ class PengaduanController extends Controller
             $itemRequest = \App\Models\ItemRequest::create([
                 'nama_lokasi' => $validated['lokasi'],
                 'nama_barang' => $validated['temporary_item_name'],
-                'deskripsi' => $request->temporary_item_desc,
+                'deskripsi' => $request->temporary_item_desc ?? 'Barang baru request dari pengaduan',
                 'requested_by' => Auth::id(),
                 'status' => 'pending'
             ]);
@@ -149,7 +171,7 @@ class PengaduanController extends Controller
             'user_id' => Auth::id(),
             'lokasi' => $validated['lokasi'],
             'barang' => $isTemporaryItem ? $validated['temporary_item_name'] : $validated['barang'],
-            'is_temporary_item' => $isTemporaryItem,
+            'is_temporary_item' => $isTemporaryItem ? 1 : 0,
             'detail_laporan' => $validated['detail_laporan'],
             'status' => 'diajukan'
         ];
@@ -166,7 +188,7 @@ class PengaduanController extends Controller
 
         $message = 'Pengaduan berhasil dikirim!';
         if ($isTemporaryItem) {
-            $message .= ' Item baru Anda akan ditinjau oleh admin.';
+            $message .= ' Barang baru Anda akan ditinjau oleh admin.';
         }
 
         return redirect()->route('pengaduan.index')->with('success', $message);
@@ -182,5 +204,28 @@ class PengaduanController extends Controller
         }
 
         return view('pengaduan.show', compact('pengaduan'));
+    }
+
+    public function destroy($id)
+    {
+        $pengaduan = Pengaduan::findOrFail($id);
+        
+        // Pastikan user hanya bisa hapus pengaduan sendiri
+        if (Auth::id() !== $pengaduan->user_id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menghapus pengaduan ini');
+        }
+
+        // Hapus gambar jika ada
+        if ($pengaduan->gambar) {
+            $imagePath = public_path('uploads/pengaduan/' . $pengaduan->gambar);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Hapus pengaduan
+        $pengaduan->delete();
+
+        return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil dihapus');
     }
 }

@@ -14,6 +14,8 @@
                 <div class="mono-logo">SARPAS / PETUGAS</div>
                 <ul class="mono-nav-links">
                     <li><a href="{{ route('petugas.dashboard') }}" class="active">Dashboard</a></li>
+                    <li><a href="{{ route('petugas.dashboard') }}?status=diajukan">Diajukan</a></li>
+                    <li><a href="{{ route('petugas.dashboard') }}?status=diproses">Diproses</a></li>
                 </ul>
                 <div style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">

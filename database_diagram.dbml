@@ -21,7 +21,7 @@ Table user {
 // Tabel Pengaduan
 Table pengaduans {
   id bigint [primary key, increment, note: 'Primary Key']
-  user_id integer [not null, note: 'ID user yang mengadukan']
+  user_id bigint [not null, note: 'ID user yang mengadukan (FK ke user.id)']
   lokasi varchar(255) [not null, note: 'Nama lokasi']
   barang varchar(255) [not null, note: 'Nama barang/fasilitas']
   is_temporary_item tinyint [default: 0, note: 'Barang sementara (belum terdaftar): 0=false, 1=true']

@@ -69,7 +69,7 @@ class AuthController extends Controller
         ])->withInput($request->only('username'));
     }
 
-    public function showDashboard() {
+    public function showDashboard(Request $request) {
         // Pastikan user sudah login
         if (!Auth::check()) {
             return redirect()->route('login');
@@ -77,18 +77,25 @@ class AuthController extends Controller
         
         $user = Auth::user();
         
-        // Ambil data pengaduan milik user yang login
-        $pengaduans = \App\Models\Pengaduan::where('user_id', $user->id_user)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Query builder untuk pengaduan
+        $query = \App\Models\Pengaduan::where('user_id', $user->id);
         
-        // Hitung statistik
+        // Filter by status jika ada
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+        
+        // Ambil data pengaduan
+        $pengaduans = $query->orderBy('created_at', 'desc')->get();
+        
+        // Hitung statistik dari SEMUA pengaduan user (tanpa filter)
+        $allPengaduans = \App\Models\Pengaduan::where('user_id', $user->id)->get();
         $stats = [
-            'total' => $pengaduans->count(),
-            'diajukan' => $pengaduans->where('status', 'diajukan')->count(),
-            'diproses' => $pengaduans->where('status', 'diproses')->count(),
-            'selesai' => $pengaduans->where('status', 'selesai')->count(),
-            'ditolak' => $pengaduans->where('status', 'ditolak')->count(),
+            'total' => $allPengaduans->count(),
+            'diajukan' => $allPengaduans->where('status', 'diajukan')->count(),
+            'diproses' => $allPengaduans->where('status', 'diproses')->count(),
+            'selesai' => $allPengaduans->where('status', 'selesai')->count(),
+            'ditolak' => $allPengaduans->where('status', 'ditolak')->count(),
         ];
         
         return view('user.dashboard', compact('pengaduans', 'stats'));

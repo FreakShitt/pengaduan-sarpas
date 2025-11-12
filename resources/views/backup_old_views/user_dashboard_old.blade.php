@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Petugas — Pengaduan Sarpas</title>
+    <title>Dashboard — Pengaduan Sarpas</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
@@ -11,14 +11,16 @@
     <header class="mono-header">
         <div class="mono-container">
             <nav class="mono-nav">
-                <div class="mono-logo">SARPAS / PETUGAS</div>
+                <div class="mono-logo">SARPAS</div>
                 <ul class="mono-nav-links">
-                    <li><a href="{{ route('petugas.dashboard') }}" class="active">Dashboard</a></li>
+                    <li><a href="{{ route('dashboard') }}" class="active">Dashboard</a></li>
+                    <li><a href="{{ route('pengaduan.index') }}">Pengaduan</a></li>
+                    <li><a href="{{ route('pengaduan.create') }}">Buat Laporan</a></li>
                 </ul>
                 <div style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">
                         <div style="font-size: 0.875rem; font-weight: 600;">{{ Auth::user()->nama_pengguna }}</div>
-                        <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em;">Petugas</div>
+                        <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em;">{{ Auth::user()->role }}</div>
                     </div>
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
@@ -34,9 +36,9 @@
         <!-- Hero Section -->
         <section class="mono-section" style="padding: 6rem 0 4rem; border-bottom: 2px solid black;">
             <div class="mono-container">
-                <h1 style="font-size: 4rem; margin-bottom: 1rem;">DASHBOARD PETUGAS</h1>
+                <h1 style="font-size: 4rem; margin-bottom: 1rem;">DASHBOARD</h1>
                 <p style="font-size: 1.25rem; color: var(--color-gray-600); max-width: 600px;">
-                    Manajemen & Review Pengaduan Fasilitas
+                    Sistem Pengaduan Sarana & Prasarana
                 </p>
             </div>
         </section>
@@ -44,7 +46,7 @@
         <!-- Statistics -->
         <section class="mono-section">
             <div class="mono-container">
-                <h6 style="margin-bottom: 2rem; color: var(--color-gray-600);">Statistik Seluruh Pengaduan</h6>
+                <h6 style="margin-bottom: 2rem; color: var(--color-gray-600);">Statistik Pengaduan</h6>
                 <div class="mono-stats-grid">
                     <div class="mono-stat-card">
                         <div class="mono-stat-number">{{ $stats['total'] }}</div>
@@ -70,46 +72,12 @@
             </div>
         </section>
 
-        <!-- Filters -->
-        <section style="background: var(--color-gray-50); padding: 2rem 0; border-bottom: 1px solid var(--color-gray-200);">
-            <div class="mono-container">
-                <form method="GET" action="{{ route('petugas.dashboard') }}">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: end;">
-                        <div class="mono-form-group" style="margin-bottom: 0;">
-                            <label class="mono-label">Pencarian</label>
-                            <input type="text" name="search" class="mono-input" placeholder="Cari lokasi, barang, detail..." value="{{ request('search') }}">
-                        </div>
-                        <div class="mono-form-group" style="margin-bottom: 0;">
-                            <label class="mono-label">Status</label>
-                            <select name="status" class="mono-select">
-                                <option value="">Semua Status</option>
-                                <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-                                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                            </select>
-                        </div>
-                        <div class="mono-form-group" style="margin-bottom: 0;">
-                            <label class="mono-label">Lokasi</label>
-                            <input type="text" name="lokasi" class="mono-input" placeholder="Filter lokasi..." value="{{ request('lokasi') }}">
-                        </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button type="submit" class="mono-btn mono-btn-primary">Filter</button>
-                            <a href="{{ route('petugas.dashboard') }}" class="mono-btn">Reset</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <!-- Reports Table -->
+        <!-- Recent Reports -->
         <section class="mono-section">
             <div class="mono-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
-                    <h2 style="margin-bottom: 0;">LAPORAN PENGADUAN</h2>
-                    <div style="font-size: 0.875rem; color: var(--color-gray-600);">
-                        Menampilkan {{ $pengaduans->count() }} dari {{ $pengaduans->total() }} laporan
-                    </div>
+                    <h2 style="margin-bottom: 0;">RECENT REPORTS</h2>
+                    <a href="{{ route('pengaduan.index') }}" class="mono-btn mono-btn-ghost">View All →</a>
                 </div>
 
                 @if($pengaduans->count() > 0)
@@ -117,24 +85,20 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Pelapor</th>
                                 <th>Lokasi</th>
                                 <th>Barang</th>
-                                <th>Detail</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th>Catatan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($pengaduans as $pengaduan)
+                            @foreach($pengaduans->take(10) as $pengaduan)
                             <tr>
                                 <td><strong>#{{ $pengaduan->id }}</strong></td>
-                                <td>{{ $pengaduan->user ? $pengaduan->user->nama_pengguna : '-' }}</td>
                                 <td>{{ $pengaduan->lokasi }}</td>
                                 <td>{{ $pengaduan->barang }}</td>
-                                <td style="max-width: 300px;">{{ Str::limit($pengaduan->detail_laporan, 60) }}</td>
-                                <td style="white-space: nowrap;">{{ $pengaduan->created_at->format('d M Y') }}</td>
+                                <td>{{ $pengaduan->created_at->format('d M Y, H:i') }} WIB</td>
                                 <td>
                                     @if($pengaduan->status == 'diajukan')
                                         <span class="mono-badge">{{ ucfirst($pengaduan->status) }}</span>
@@ -147,37 +111,40 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('petugas.laporan.show', $pengaduan->id) }}" class="mono-btn mono-btn-sm">Detail</a>
+                                    @if($pengaduan->catatan_petugas)
+                                        {{ Str::limit($pengaduan->catatan_petugas, 50) }}
+                                    @else
+                                        <span style="color: var(--color-gray-400);">—</span>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-
-                    <!-- Pagination -->
-                    <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 0.5rem;">
-                        @if($pengaduans->onFirstPage())
-                            <span class="mono-btn mono-btn-sm" style="opacity: 0.3; cursor: not-allowed;">← Prev</span>
-                        @else
-                            <a href="{{ $pengaduans->previousPageUrl() }}" class="mono-btn mono-btn-sm">← Prev</a>
-                        @endif
-
-                        <span class="mono-btn mono-btn-sm mono-btn-primary" style="cursor: default;">
-                            Page {{ $pengaduans->currentPage() }} / {{ $pengaduans->lastPage() }}
-                        </span>
-
-                        @if($pengaduans->hasMorePages())
-                            <a href="{{ $pengaduans->nextPageUrl() }}" class="mono-btn mono-btn-sm">Next →</a>
-                        @else
-                            <span class="mono-btn mono-btn-sm" style="opacity: 0.3; cursor: not-allowed;">Next →</span>
-                        @endif
-                    </div>
                 @else
                     <div style="text-align: center; padding: 4rem 0; border: 1px solid var(--color-gray-200);">
-                        <h3 style="color: var(--color-gray-500); font-weight: 400;">Tidak ada laporan ditemukan</h3>
-                        <p style="color: var(--color-gray-400);">Coba ubah filter atau pencarian</p>
+                        <h3 style="color: var(--color-gray-500); font-weight: 400;">Belum ada pengaduan</h3>
+                        <p style="color: var(--color-gray-400); margin-bottom: 2rem;">Mulai buat laporan pengaduan baru</p>
+                        <a href="{{ route('pengaduan.create') }}" class="mono-btn mono-btn-primary">Buat Laporan Baru</a>
                     </div>
                 @endif
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="mono-section" style="background: var(--color-gray-50);">
+            <div class="mono-container">
+                <h6 style="margin-bottom: 2rem; color: var(--color-gray-600);">Quick Actions</h6>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <a href="{{ route('pengaduan.create') }}" class="mono-card" style="text-decoration: none;">
+                        <div class="mono-card-title">Buat Laporan</div>
+                        <div class="mono-card-body">Laporkan kerusakan atau masalah fasilitas</div>
+                    </a>
+                    <a href="{{ route('pengaduan.index') }}" class="mono-card" style="text-decoration: none;">
+                        <div class="mono-card-title">Lihat Semua</div>
+                        <div class="mono-card-body">Pantau semua pengaduan yang telah dibuat</div>
+                    </a>
+                </div>
             </div>
         </section>
     </main>
@@ -192,7 +159,7 @@
     </footer>
 
     <script>
-        // Smooth scroll
+        // Smooth scroll behavior
         document.documentElement.style.scrollBehavior = 'smooth';
 
         // Fade in animations

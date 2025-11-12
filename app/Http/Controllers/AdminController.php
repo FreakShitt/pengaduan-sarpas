@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
     // Dashboard
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $totalReports = Pengaduan::count();
         $totalPetugas = User::where('role', 'petugas')->count();
@@ -28,11 +28,57 @@ class AdminController extends Controller
         $totalLokasi = Lokasi::where('aktif', true)->count();
         $totalBarang = Barang::where('aktif', true)->count();
 
-        // Recent reports
-        $recentReports = Pengaduan::with(['user', 'petugas'])
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
+        // Get all locations for filter (not used in dashboard anymore, moved to barang)
+        $lokasi = Lokasi::where('aktif', true)->orderBy('nama_lokasi')->get();
+        
+        // Recent reports with filters (same as petugas dashboard)
+        $recentReportsQuery = Pengaduan::with(['user', 'petugas']);
+        
+        // Search filter
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $recentReportsQuery->where(function($query) use ($search) {
+                $query->where('lokasi', 'LIKE', "%{$search}%")
+                      ->orWhere('barang', 'LIKE', "%{$search}%")
+                      ->orWhere('detail_laporan', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Status filter
+        if ($request->has('status') && $request->status != '') {
+            $recentReportsQuery->where('status', $request->status);
+        }
+        
+        // Lokasi filter (text input)
+        if ($request->has('lokasi') && $request->lokasi != '') {
+            $recentReportsQuery->where('lokasi', 'LIKE', '%' . $request->lokasi . '%');
+        }
+        
+        $recentReports = $recentReportsQuery->orderBy('created_at', 'desc')
+            ->limit(10)
             ->get();
+
+        // Statistics by location for barang dashboard
+        $barangByLocation = Barang::select('nama_lokasi', DB::raw('count(*) as total'))
+            ->where('aktif', true)
+            ->groupBy('nama_lokasi')
+            ->get()
+            ->map(function($item) {
+                // Normalize classroom names
+                if (stripos($item->nama_lokasi, 'kelas') !== false || 
+                    stripos($item->nama_lokasi, 'ruang kelas') !== false) {
+                    $item->nama_lokasi = 'Ruang Kelas';
+                }
+                return $item;
+            })
+            ->groupBy('nama_lokasi')
+            ->map(function($group) {
+                return [
+                    'nama_lokasi' => $group->first()->nama_lokasi,
+                    'total' => $group->sum('total')
+                ];
+            })
+            ->values();
 
         return view('admin.dashboard', compact(
             'totalReports',
@@ -45,7 +91,9 @@ class AdminController extends Controller
             'rejectedReports',
             'totalLokasi',
             'totalBarang',
-            'recentReports'
+            'recentReports',
+            'lokasi',
+            'barangByLocation'
         ));
     }
 
@@ -75,7 +123,7 @@ class AdminController extends Controller
         $request->validate([
             'nama_pengguna' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:user,username',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         User::create([
@@ -85,7 +133,7 @@ class AdminController extends Controller
             'role' => 'petugas',
         ]);
 
-        return redirect()->route('admin.petugas')->with('success', 'Petugas berhasil ditambahkan!');
+        return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil ditambahkan!');
     }
 
     // User Management (Siswa & Guru)
@@ -118,7 +166,7 @@ class AdminController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan!');
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan!');
     }
 
     // Lokasi Management
@@ -146,9 +194,13 @@ class AdminController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
-        Lokasi::create($request->all());
+        Lokasi::create([
+            'nama_lokasi' => $request->nama_lokasi,
+            'deskripsi' => $request->deskripsi,
+            'aktif' => true,
+        ]);
 
-        return redirect()->route('admin.lokasi')->with('success', 'Lokasi berhasil ditambahkan!');
+        return redirect()->route('admin.lokasi.index')->with('success', 'Lokasi berhasil ditambahkan!');
     }
 
     public function editLokasi($id)
@@ -167,24 +219,57 @@ class AdminController extends Controller
             'aktif' => 'boolean',
         ]);
 
-        $lokasi->update($request->all());
+        $lokasi->update([
+            'nama_lokasi' => $request->nama_lokasi,
+            'deskripsi' => $request->deskripsi,
+            'aktif' => $request->has('aktif') ? $request->aktif : $lokasi->aktif,
+        ]);
 
-        return redirect()->route('admin.lokasi')->with('success', 'Lokasi berhasil diupdate!');
+        return redirect()->route('admin.lokasi.index')->with('success', 'Lokasi berhasil diupdate!');
     }
 
     public function destroyLokasi($id)
     {
         $lokasi = Lokasi::findOrFail($id);
+        
+        // Check if lokasi has barang
+        $barangCount = Barang::where('nama_lokasi', $lokasi->nama_lokasi)->count();
+        if ($barangCount > 0) {
+            return redirect()->route('admin.lokasi.index')
+                ->with('error', 'Tidak dapat menghapus lokasi yang masih memiliki barang!');
+        }
+
         $lokasi->delete();
 
-        return redirect()->route('admin.lokasi')->with('success', 'Lokasi berhasil dihapus!');
+        return redirect()->route('admin.lokasi.index')->with('success', 'Lokasi berhasil dihapus!');
     }
 
     // Barang Management
-    public function barang()
+    public function barang(Request $request)
     {
-        $barang = Barang::all();
-        return view('admin.barang.index', compact('barang'));
+        $barangQuery = Barang::query();
+        
+        // Get all locations for filter dropdown
+        $lokasi = Lokasi::where('aktif', true)->orderBy('nama_lokasi')->get();
+        
+        // Filter by location if selected
+        if ($request->has('lokasi') && $request->lokasi != '') {
+            $selectedLokasi = $request->lokasi;
+            
+            // If "Ruang Kelas" is selected, include all classroom variations
+            if ($selectedLokasi == 'Ruang Kelas') {
+                $barangQuery->where(function($query) {
+                    $query->where('nama_lokasi', 'LIKE', '%Ruang Kelas%')
+                          ->orWhere('nama_lokasi', 'LIKE', '%Kelas%');
+                });
+            } else {
+                $barangQuery->where('nama_lokasi', $selectedLokasi);
+            }
+        }
+        
+        $barang = $barangQuery->get();
+        
+        return view('admin.barang.index', compact('barang', 'lokasi'));
     }
 
     public function createBarang()
@@ -196,14 +281,19 @@ class AdminController extends Controller
     public function storeBarang(Request $request)
     {
         $request->validate([
-            'lokasi_id' => 'required|exists:lokasi,id',
+            'nama_lokasi' => 'required|string|exists:lokasi,nama_lokasi',
             'nama_barang' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
         ]);
 
-        Barang::create($request->all());
+        Barang::create([
+            'nama_lokasi' => $request->nama_lokasi,
+            'nama_barang' => $request->nama_barang,
+            'deskripsi' => $request->deskripsi,
+            'aktif' => true,
+        ]);
 
-        return redirect()->route('admin.barang')->with('success', 'Barang berhasil ditambahkan!');
+        return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil ditambahkan!');
     }
 
     public function editBarang($id)
@@ -218,15 +308,20 @@ class AdminController extends Controller
         $barang = Barang::findOrFail($id);
 
         $request->validate([
-            'lokasi_id' => 'required|exists:lokasi,id',
+            'nama_lokasi' => 'required|string|exists:lokasi,nama_lokasi',
             'nama_barang' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'aktif' => 'boolean',
         ]);
 
-        $barang->update($request->all());
+        $barang->update([
+            'nama_lokasi' => $request->nama_lokasi,
+            'nama_barang' => $request->nama_barang,
+            'deskripsi' => $request->deskripsi,
+            'aktif' => $request->has('aktif') ? $request->aktif : $barang->aktif,
+        ]);
 
-        return redirect()->route('admin.barang')->with('success', 'Barang berhasil diupdate!');
+        return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil diupdate!');
     }
 
     public function destroyBarang($id)
@@ -234,7 +329,7 @@ class AdminController extends Controller
         $barang = Barang::findOrFail($id);
         $barang->delete();
 
-        return redirect()->route('admin.barang')->with('success', 'Barang berhasil dihapus!');
+        return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil dihapus!');
     }
 
     // Laporan dengan filter
@@ -389,6 +484,16 @@ class AdminController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // Check if lokasi exists, if not create it
+            $lokasi = Lokasi::where('nama_lokasi', $itemRequest->nama_lokasi)->first();
+            if (!$lokasi) {
+                Lokasi::create([
+                    'nama_lokasi' => $itemRequest->nama_lokasi,
+                    'deskripsi' => 'Lokasi dari item request',
+                    'aktif' => true,
+                ]);
+            }
 
             // Create new Barang
             Barang::create([

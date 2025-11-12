@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
             'admin' => \App\Http\Middleware\CheckAdmin::class,
         ]);
+        
+        // Exclude logout from CSRF verification
+        $middleware->validateCsrfTokens(except: [
+            'logout',
+            '/logout',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

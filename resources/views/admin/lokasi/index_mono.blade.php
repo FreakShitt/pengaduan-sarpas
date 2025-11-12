@@ -16,10 +16,8 @@
                     <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ route('admin.laporan') }}">Laporan</a></li>
                     <li><a href="{{ route('admin.users.index') }}">Users</a></li>
-                    <li><a href="{{ route('admin.petugas.index') }}">Petugas</a></li>
                     <li><a href="{{ route('admin.lokasi.index') }}" class="active">Lokasi</a></li>
                     <li><a href="{{ route('admin.barang.index') }}">Barang</a></li>
-                    <li><a href="{{ route('admin.item-requests.index') }}">Item Requests</a></li>
                 </ul>
                 <div style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">

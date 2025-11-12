@@ -79,7 +79,7 @@
                     <!-- Barang -->
                     <div class="mono-form-group">
                         <label class="mono-label" for="barang">Barang/Fasilitas <span style="color: var(--color-gray-400);">*</span></label>
-                        <select id="barang" name="barang" class="mono-select" disabled>
+                        <select id="barang" name="barang" class="mono-select" required disabled>
                             <option value="">Pilih lokasi terlebih dahulu</option>
                         </select>
                         <p style="font-size: 0.875rem; color: var(--color-gray-600); margin-top: 0.5rem;">
@@ -97,16 +97,14 @@
 
                     <!-- Custom Item Input -->
                     <div id="custom_item_field" style="display: none;" class="mono-form-group">
-                        <label class="mono-label" for="temporary_item_name">Nama Barang Baru <span style="color: var(--color-gray-400);">*</span></label>
+                        <label class="mono-label" for="custom_barang">Nama Barang Baru</label>
                         <input 
                             type="text" 
-                            id="temporary_item_name" 
-                            name="temporary_item_name" 
+                            id="custom_barang" 
+                            name="custom_barang" 
                             class="mono-input"
                             placeholder="Contoh: Papan Tulis Elektrik">
-                        <p style="font-size: 0.875rem; color: var(--color-gray-600); margin-top: 0.5rem;">
-                            Masukkan nama barang yang belum terdaftar
-                        </p>
+                        <input type="hidden" name="is_temporary_item" id="is_temporary_item" value="0">
                     </div>
 
                     <!-- Detail Laporan -->
@@ -172,22 +170,16 @@
         const barangSelect = document.getElementById('barang');
         const customItemCheckbox = document.getElementById('custom_item_checkbox');
         const customItemField = document.getElementById('custom_item_field');
-        const customBarangInput = document.getElementById('temporary_item_name');
+        const customBarangInput = document.getElementById('custom_barang');
+        const isTempInput = document.getElementById('is_temporary_item');
 
-        // Set barang required by default when lokasi is selected
         lokasiSelect.addEventListener('change', function() {
             const lokasi = this.value;
             
             if (!lokasi) {
                 barangSelect.disabled = true;
-                barangSelect.removeAttribute('required');
                 barangSelect.innerHTML = '<option value="">Pilih lokasi terlebih dahulu</option>';
                 return;
-            }
-
-            // Only set required if custom item is NOT checked
-            if (!customItemCheckbox.checked) {
-                barangSelect.setAttribute('required', 'required');
             }
 
             // Fetch barang via AJAX
@@ -217,25 +209,18 @@
         // Custom item toggle
         customItemCheckbox.addEventListener('change', function() {
             if (this.checked) {
-                // Show custom field
                 customItemField.style.display = 'block';
-                customBarangInput.setAttribute('required', 'required');
-                
-                // Disable and remove required from barang select
-                barangSelect.removeAttribute('required');
+                customBarangInput.required = true;
+                barangSelect.required = false;
                 barangSelect.disabled = true;
-                barangSelect.value = '';
+                isTempInput.value = '1';
             } else {
-                // Hide custom field
                 customItemField.style.display = 'none';
-                customBarangInput.removeAttribute('required');
+                customBarangInput.required = false;
                 customBarangInput.value = '';
-                
-                // Enable barang select and set required if lokasi is selected
-                if (lokasiSelect.value) {
-                    barangSelect.disabled = false;
-                    barangSelect.setAttribute('required', 'required');
-                }
+                barangSelect.required = true;
+                barangSelect.disabled = false;
+                isTempInput.value = '0';
             }
         });
 

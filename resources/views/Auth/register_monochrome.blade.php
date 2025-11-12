@@ -18,7 +18,7 @@
         </div>
 
         <!-- Register Form -->
-        <div style="border: 2px solid var(--color-black); border-radius: var(--radius-lg); padding: 3rem;">
+        <div style="border: 2px solid var(--color-black); padding: 3rem;">
             <h2 style="margin-bottom: 2rem; text-align: center;">REGISTER</h2>
 
             @if ($errors->any())

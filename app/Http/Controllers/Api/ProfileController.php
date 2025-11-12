@@ -19,7 +19,7 @@ class ProfileController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'id' => $user->id_user,
+                'id' => $user->id,
                 'nama_pengguna' => $user->nama_pengguna,
                 'username' => $user->username,
                 'role' => $user->role,
@@ -39,7 +39,7 @@ class ProfileController extends Controller
         // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_pengguna' => 'sometimes|required|string|max:255',
-            'username' => 'sometimes|required|string|max:255|unique:user,username,' . $user->id_user . ',id_user',
+            'username' => 'sometimes|required|string|max:255|unique:user,username,' . $user->id,
             'current_password' => 'required_with:new_password|string',
             'new_password' => 'nullable|string|min:6|confirmed',
         ], [
@@ -89,7 +89,7 @@ class ProfileController extends Controller
                 'success' => true,
                 'message' => 'Profile berhasil diupdate',
                 'data' => [
-                    'id' => $user->id_user,
+                    'id' => $user->id,
                     'nama_pengguna' => $user->nama_pengguna,
                     'username' => $user->username,
                     'role' => $user->role,

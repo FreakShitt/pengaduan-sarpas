@@ -16,10 +16,8 @@
                     <li><a href="{{ route('admin.dashboard') }}" class="active">Dashboard</a></li>
                     <li><a href="{{ route('admin.laporan') }}">Laporan</a></li>
                     <li><a href="{{ route('admin.users.index') }}">Users</a></li>
-                    <li><a href="{{ route('admin.petugas.index') }}">Petugas</a></li>
                     <li><a href="{{ route('admin.lokasi.index') }}">Lokasi</a></li>
                     <li><a href="{{ route('admin.barang.index') }}">Barang</a></li>
-                    <li><a href="{{ route('admin.item-requests.index') }}">Item Requests</a></li>
                 </ul>
                 <div style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">
@@ -40,7 +38,7 @@
         <!-- Hero Section -->
         <section class="mono-section" style="padding: 6rem 0 4rem; border-bottom: 2px solid black;">
             <div class="mono-container">
-                <h1 style="font-size: 4rem; margin-bottom: 1rem;">ADMIN DASHBOARD</h1>
+                <h2 style="font-size: 4rem; margin-bottom: 1rem;">ADMIN DASHBOARD</h2>
                 <p style="font-size: 1.25rem; color: var(--color-gray-600); max-width: 600px;">
                     System Overview & Management
                 </p>
@@ -105,60 +103,13 @@
             </div>
         </section>
 
-        <!-- Barang by Location Stats -->
+        <!-- Recent Reports -->
         <section class="mono-section">
             <div class="mono-container">
-                <h6 style="margin-bottom: 2rem; color: var(--color-gray-600);">Barang per Lokasi</h6>
-                <div class="mono-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
-                    @foreach($barangByLocation as $item)
-                    <div class="mono-stat-card" style="padding: 1rem;">
-                        <div class="mono-stat-number" style="font-size: 1.75rem;">{{ $item['total'] }}</div>
-                        <div class="mono-stat-label" style="font-size: 0.75rem;">{{ $item['nama_lokasi'] }}</div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-
-        <!-- Recent Reports -->
-        <section class="mono-section" style="background: var(--color-gray-50);">
-            <div class="mono-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
                     <h2 style="margin-bottom: 0;">RECENT REPORTS</h2>
                     <a href="{{ route('admin.laporan') }}" class="mono-btn mono-btn-ghost">View All →</a>
                 </div>
-
-                <!-- Filters -->
-                <form method="GET" action="{{ route('admin.dashboard') }}" style="margin-bottom: 2rem;">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: end;">
-                        <div style="margin-bottom: 0;">
-                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-gray-700); margin-bottom: 0.5rem;">Pencarian</label>
-                            <input type="text" name="search" placeholder="Cari lokasi, barang, detail..." value="{{ request('search') }}"
-                                style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--color-gray-200); border-radius: 8px; font-size: 0.9375rem; background: white;">
-                        </div>
-                        <div style="margin-bottom: 0;">
-                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-gray-700); margin-bottom: 0.5rem;">Status</label>
-                            <select name="status" 
-                                style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--color-gray-200); border-radius: 8px; font-size: 0.9375rem; background: white;">
-                                <option value="">Semua Status</option>
-                                <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-                                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                            </select>
-                        </div>
-                        <div style="margin-bottom: 0;">
-                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-gray-700); margin-bottom: 0.5rem;">Lokasi</label>
-                            <input type="text" name="lokasi" placeholder="Filter lokasi..." value="{{ request('lokasi') }}"
-                                style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--color-gray-200); border-radius: 8px; font-size: 0.9375rem; background: white;">
-                        </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button type="submit" class="mono-btn">Filter</button>
-                            <a href="{{ route('admin.dashboard') }}" class="mono-btn mono-btn-ghost">Reset</a>
-                        </div>
-                    </div>
-                </form>
-                </form>
 
                 @if($recentReports->count() > 0)
                     <table class="mono-table">

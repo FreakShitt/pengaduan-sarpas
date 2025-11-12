@@ -31,6 +31,7 @@ Route::middleware(['auth', 'role:siswa,guru'])->group(function () {
     Route::get('/pengaduan/get-barang', [PengaduanController::class, 'getBarangByLokasi'])->name('pengaduan.get-barang');
     Route::post('/pengaduan', [PengaduanController::class, 'store'])->name('pengaduan.store');
     Route::get('/pengaduan/{id}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+    Route::delete('/pengaduan/{id}', [PengaduanController::class, 'destroy'])->name('pengaduan.destroy');
 });
 
 // PETUGAS (protected - untuk petugas)
@@ -38,8 +39,8 @@ use App\Http\Controllers\PetugasController;
 
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->group(function () {
     Route::get('/dashboard', [PetugasController::class, 'dashboard'])->name('petugas.dashboard');
-    Route::get('/laporan/{id}', [PetugasController::class, 'show'])->name('petugas.detail');
-    Route::put('/laporan/{id}/update-status', [PetugasController::class, 'updateStatus'])->name('petugas.update-status');
+    Route::get('/laporan/{id}', [PetugasController::class, 'show'])->name('petugas.laporan.show');
+    Route::put('/laporan/{id}/update-status', [PetugasController::class, 'updateStatus'])->name('petugas.laporan.update-status');
 });
 
 // ADMIN (protected - untuk admin)
@@ -50,17 +51,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
     // Petugas Management
-    Route::get('/petugas', [AdminController::class, 'petugas'])->name('admin.petugas');
+    Route::get('/petugas', [AdminController::class, 'petugas'])->name('admin.petugas.index');
     Route::get('/petugas/create', [AdminController::class, 'createPetugas'])->name('admin.petugas.create');
     Route::post('/petugas', [AdminController::class, 'storePetugas'])->name('admin.petugas.store');
     
     // User Management (Siswa & Guru)
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
     Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     
     // Lokasi Management
-    Route::get('/lokasi', [AdminController::class, 'lokasi'])->name('admin.lokasi');
+    Route::get('/lokasi', [AdminController::class, 'lokasi'])->name('admin.lokasi.index');
     Route::get('/lokasi/create', [AdminController::class, 'createLokasi'])->name('admin.lokasi.create');
     Route::post('/lokasi', [AdminController::class, 'storeLokasi'])->name('admin.lokasi.store');
     Route::get('/lokasi/{id}/edit', [AdminController::class, 'editLokasi'])->name('admin.lokasi.edit');
@@ -68,7 +69,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/lokasi/{id}', [AdminController::class, 'destroyLokasi'])->name('admin.lokasi.destroy');
     
     // Barang Management
-    Route::get('/barang', [AdminController::class, 'barang'])->name('admin.barang');
+    Route::get('/barang', [AdminController::class, 'barang'])->name('admin.barang.index');
     Route::get('/barang/create', [AdminController::class, 'createBarang'])->name('admin.barang.create');
     Route::post('/barang', [AdminController::class, 'storeBarang'])->name('admin.barang.store');
     Route::get('/barang/{id}/edit', [AdminController::class, 'editBarang'])->name('admin.barang.edit');
@@ -76,7 +77,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/barang/{id}', [AdminController::class, 'destroyBarang'])->name('admin.barang.destroy');
     
     // Item Requests Management
-    Route::get('/item-requests', [AdminController::class, 'itemRequests'])->name('admin.item-requests');
+    Route::get('/item-requests', [AdminController::class, 'itemRequests'])->name('admin.item-requests.index');
     Route::post('/item-requests/{id}/approve', [AdminController::class, 'approveItemRequest'])->name('admin.item-requests.approve');
     Route::post('/item-requests/{id}/reject', [AdminController::class, 'rejectItemRequest'])->name('admin.item-requests.reject');
     

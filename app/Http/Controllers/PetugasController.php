@@ -72,10 +72,11 @@ class PetugasController extends Controller
         $pengaduan->update([
             'status' => $request->status,
             'catatan_petugas' => $request->catatan_petugas,
+            'petugas_id' => auth()->id(), // Track which petugas handled this report
             'updated_at' => now()
         ]);
         
-        return redirect()->route('petugas.detail', $id)
+        return redirect()->route('petugas.laporan.show', $id)
             ->with('success', 'Status laporan berhasil diperbarui');
     }
 }

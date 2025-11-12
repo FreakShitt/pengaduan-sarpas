@@ -1,0 +1,692 @@
+/**
+ * CLEAN MONOCHROME MODERN THEME
+ * Black, White, Gray - No colors, no gradients, no decorations
+ * Typography-first, minimal, confident
+ */
+
+/* ===========================
+   DESIGN TOKENS
+   =========================== */
+:root {
+    /* Colors - Monochrome Base */
+    --color-black: #2D2D2D;  /* Medium dark gray - lebih soft */
+    --color-white: #FFFFFF;
+    --color-gray-50: #F5F5F5;
+    --color-gray-100: #E8E8E8;
+    --color-gray-200: #D4D4D4;
+    --color-gray-300: #B8B8B8;
+    --color-gray-400: #A0A0A0;
+    --color-gray-500: #808080;
+    --color-gray-600: #606060;
+    --color-gray-700: #404040;
+    --color-gray-800: #2A2A2A;
+    --color-gray-900: #1A1A1A;
+
+    /* Subtle Accent Colors - Low Saturation */
+    --color-red-50: #FEF2F2;
+    --color-red-100: #FEE2E2;
+    --color-red-200: #FECACA;
+    --color-red-500: #DC2626;
+    --color-red-600: #B91C1C;
+    --color-red-700: #991B1B;
+    --color-red-900: #7F1D1D;
+
+    --color-green-50: #F0FDF4;
+    --color-green-100: #DCFCE7;
+    --color-green-500: #16A34A;
+    --color-green-600: #15803D;
+    --color-green-700: #14532D;
+
+    --color-blue-50: #EFF6FF;
+    --color-blue-100: #DBEAFE;
+    --color-blue-500: #3B82F6;
+    --color-blue-600: #2563EB;
+
+    --color-yellow-50: #FEFCE8;
+    --color-yellow-100: #FEF9C3;
+    --color-yellow-500: #EAB308;
+    --color-yellow-600: #CA8A04;
+
+    /* Typography */
+    --font-sans: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    --font-body: 'Inter', 'Nunito Sans', 'Work Sans', system-ui, sans-serif;
+
+    /* Type Scale */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.875rem;     /* 14px */
+    --text-base: 1rem;       /* 16px */
+    --text-lg: 1.125rem;     /* 18px */
+    --text-xl: 1.25rem;      /* 20px */
+    --text-2xl: 1.5rem;      /* 24px */
+    --text-3xl: 1.875rem;    /* 30px */
+    --text-4xl: 2.25rem;     /* 36px */
+    --text-5xl: 3rem;        /* 48px */
+    --text-6xl: 3.75rem;     /* 60px */
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+
+    /* Border */
+    --border-thin: 1px solid var(--color-gray-200);
+    --border-medium: 2px solid var(--color-black);
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* Shadow - Minimal */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    /* Transition */
+    --transition-fast: 200ms linear;
+    --transition-base: 300ms linear;
+}
+
+/* ===========================
+   RESET & BASE
+   =========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--color-black);
+    background-color: var(--color-white);
+    font-weight: 400;
+}
+
+/* ===========================
+   TYPOGRAPHY
+   =========================== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: var(--space-4);
+}
+
+h1 {
+    font-size: var(--text-5xl);
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+}
+
+h2 {
+    font-size: var(--text-4xl);
+    text-transform: uppercase;
+    letter-spacing: -0.025em;
+}
+
+h3 {
+    font-size: var(--text-3xl);
+}
+
+h4 {
+    font-size: var(--text-2xl);
+}
+
+h5 {
+    font-size: var(--text-xl);
+}
+
+h6 {
+    font-size: var(--text-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+p {
+    margin-bottom: var(--space-4);
+}
+
+a {
+    color: var(--color-black);
+    text-decoration: none;
+    transition: opacity var(--transition-fast);
+}
+
+a:hover {
+    opacity: 0.6;
+}
+
+/* ===========================
+   LAYOUT
+   =========================== */
+.mono-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+}
+
+.mono-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--space-6);
+}
+
+.mono-section {
+    padding: var(--space-16) 0;
+    border-bottom: var(--border-thin);
+}
+
+.mono-section:last-child {
+    border-bottom: none;
+}
+
+/* ===========================
+   HEADER / NAVIGATION
+   =========================== */
+.mono-header {
+    position: sticky;
+    top: 0;
+    background: var(--color-white);
+    border-bottom: var(--border-thin);
+    padding: var(--space-6) 0;
+    z-index: 1000;
+}
+
+.mono-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mono-logo {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mono-nav-links {
+    display: flex;
+    gap: var(--space-8);
+    list-style: none;
+}
+
+.mono-nav-links a {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    position: relative;
+}
+
+.mono-nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-black);
+    transition: width var(--transition-base);
+}
+
+.mono-nav-links a:hover::after,
+.mono-nav-links a.active::after {
+    width: 100%;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+.mono-btn {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: var(--border-medium);
+    border-radius: var(--radius-md);
+    background: transparent;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: var(--font-sans);
+}
+
+.mono-btn:hover {
+    background: var(--color-black);
+    color: var(--color-white);
+    opacity: 1;
+}
+
+.mono-btn-primary {
+    background: var(--color-black);
+    color: var(--color-white);
+}
+
+.mono-btn-primary:hover {
+    background: var(--color-white);
+    color: var(--color-black);
+}
+
+.mono-btn-ghost {
+    border: var(--border-thin);
+}
+
+.mono-btn-sm {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-xs);
+}
+
+.mono-btn-lg {
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--text-base);
+}
+
+/* Button Color Variants */
+.mono-btn-danger {
+    background-color: var(--color-red-600);
+    color: var(--color-white);
+    border-color: var(--color-red-700);
+}
+
+.mono-btn-danger:hover {
+    background-color: var(--color-red-700);
+    border-color: var(--color-red-900);
+}
+
+.mono-btn-success {
+    background-color: var(--color-green-600);
+    color: var(--color-white);
+    border-color: var(--color-green-700);
+}
+
+.mono-btn-success:hover {
+    background-color: var(--color-green-700);
+}
+
+.mono-btn-info {
+    background-color: var(--color-blue-600);
+    color: var(--color-white);
+    border-color: var(--color-blue-600);
+}
+
+.mono-btn-info:hover {
+    background-color: var(--color-blue-500);
+}
+
+.mono-btn-warning {
+    background-color: var(--color-yellow-600);
+    color: var(--color-white);
+    border-color: var(--color-yellow-600);
+}
+
+.mono-btn-warning:hover {
+    background-color: var(--color-yellow-500);
+}
+
+.mono-btn-outline-danger {
+    background-color: transparent;
+    color: var(--color-red-600);
+    border: 2px solid var(--color-red-600);
+}
+
+.mono-btn-outline-danger:hover {
+    background-color: var(--color-red-600);
+    color: var(--color-white);
+}
+
+/* Logout Button - Special hover state */
+button[type="submit"]:has(+ *):contains("Logout"),
+button.logout-btn,
+button[type="submit"].logout-btn {
+    transition: all var(--transition-base);
+}
+
+button[type="submit"]:has(+ *):contains("Logout"):hover,
+button.logout-btn:hover,
+button[type="submit"].logout-btn:hover,
+form[action*="logout"] button[type="submit"]:hover {
+    background-color: var(--color-red-600) !important;
+    border-color: var(--color-red-700) !important;
+    color: var(--color-white) !important;
+}
+
+/* ===========================
+   CARDS
+   =========================== */
+.mono-card {
+    background: var(--color-white);
+    border: var(--border-thin);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    transition: border-color var(--transition-base);
+}
+
+.mono-card:hover {
+    border-color: var(--color-black);
+}
+
+.mono-card-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: var(--space-3);
+    letter-spacing: 0.02em;
+}
+
+.mono-card-body {
+    color: var(--color-gray-700);
+    line-height: 1.7;
+}
+
+/* ===========================
+   STATS / METRICS
+   =========================== */
+.mono-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-6);
+    margin: var(--space-8) 0;
+}
+
+.mono-stat-card {
+    border: var(--border-thin);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.mono-stat-card:hover {
+    border-color: var(--color-black);
+    background: var(--color-gray-50);
+}
+
+.mono-stat-number {
+    font-size: var(--text-5xl);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: var(--space-2);
+}
+
+.mono-stat-label {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gray-600);
+}
+
+/* ===========================
+   TABLES
+   =========================== */
+.mono-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-8) 0;
+}
+
+.mono-table thead {
+    border-bottom: var(--border-medium);
+}
+
+.mono-table th {
+    padding: var(--space-4);
+    text-align: left;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+}
+
+.mono-table td {
+    padding: var(--space-4);
+    border-bottom: var(--border-thin);
+}
+
+.mono-table tr:last-child td {
+    border-bottom: none;
+}
+
+.mono-table tbody tr {
+    transition: background var(--transition-fast);
+}
+
+.mono-table tbody tr:hover {
+    background: var(--color-gray-50);
+}
+
+/* ===========================
+   BADGES / STATUS
+   =========================== */
+.mono-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    border: var(--border-thin);
+    border-radius: var(--radius-sm);
+    background: var(--color-white);
+}
+
+.mono-badge-filled {
+    background: var(--color-black);
+    color: var(--color-white);
+    border-color: var(--color-black);
+}
+
+.mono-badge-outlined {
+    background: transparent;
+    color: var(--color-black);
+}
+
+/* Status Badge Color Variants */
+.mono-badge-diajukan {
+    background: var(--color-blue-100);
+    color: var(--color-blue-600);
+    border-color: var(--color-blue-500);
+}
+
+.mono-badge-diproses {
+    background: var(--color-yellow-100);
+    color: var(--color-yellow-600);
+    border-color: var(--color-yellow-500);
+}
+
+.mono-badge-selesai {
+    background: var(--color-green-100);
+    color: var(--color-green-600);
+    border-color: var(--color-green-500);
+}
+
+.mono-badge-ditolak {
+    background: var(--color-red-100);
+    color: var(--color-red-600);
+    border-color: var(--color-red-500);
+}
+
+.mono-badge-pending {
+    background: var(--color-gray-100);
+    color: var(--color-gray-600);
+    border-color: var(--color-gray-400);
+}
+
+.mono-badge-approved {
+    background: var(--color-green-100);
+    color: var(--color-green-600);
+    border-color: var(--color-green-500);
+}
+
+.mono-badge-rejected {
+    background: var(--color-red-100);
+    color: var(--color-red-600);
+    border-color: var(--color-red-500);
+}
+
+/* ===========================
+   FORMS
+   =========================== */
+.mono-form-group {
+    margin-bottom: var(--space-6);
+}
+
+.mono-label {
+    display: block;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+}
+
+.mono-input,
+.mono-textarea,
+.mono-select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    border: var(--border-thin);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    transition: border-color var(--transition-base);
+}
+
+.mono-input:focus,
+.mono-textarea:focus,
+.mono-select:focus {
+    outline: none;
+    border-color: var(--color-black);
+}
+
+.mono-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* ===========================
+   ALERTS / MESSAGES
+   =========================== */
+.mono-alert {
+    padding: var(--space-4) var(--space-6);
+    border: 2px solid;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-6);
+    font-size: var(--text-sm);
+}
+
+.mono-alert-success {
+    background: var(--color-green-50);
+    border-color: var(--color-green-500);
+    color: var(--color-green-700);
+}
+
+.mono-alert-error {
+    background: var(--color-red-50);
+    border-color: var(--color-red-500);
+    color: var(--color-red-700);
+}
+
+.mono-alert-warning {
+    background: var(--color-yellow-50);
+    border-color: var(--color-yellow-500);
+    color: var(--color-yellow-600);
+}
+
+.mono-alert-info {
+    background: var(--color-blue-50);
+    border-color: var(--color-blue-500);
+    color: var(--color-blue-700);
+}
+
+/* ===========================
+   DIVIDER
+   =========================== */
+.mono-divider {
+    height: 1px;
+    background: var(--color-gray-200);
+    margin: var(--space-8) 0;
+}
+
+.mono-divider-thick {
+    height: 2px;
+    background: var(--color-black);
+}
+
+/* ===========================
+   UTILITIES
+   =========================== */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-upper { text-transform: uppercase; }
+
+.mt-4 { margin-top: var(--space-4); }
+.mt-8 { margin-top: var(--space-8); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-8 { margin-bottom: var(--space-8); }
+.my-8 { margin-top: var(--space-8); margin-bottom: var(--space-8); }
+
+.pt-8 { padding-top: var(--space-8); }
+.pb-8 { padding-bottom: var(--space-8); }
+.py-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+
+.opacity-60 { opacity: 0.6; }
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mono-fade-in {
+    animation: fadeIn var(--transition-base) ease-out;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+@media (max-width: 768px) {
+    :root {
+        --text-5xl: 2rem;
+        --text-4xl: 1.75rem;
+        --text-3xl: 1.5rem;
+    }
+
+    .mono-container {
+        padding: 0 var(--space-4);
+    }
+
+    .mono-nav-links {
+        gap: var(--space-4);
+    }
+
+    .mono-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
