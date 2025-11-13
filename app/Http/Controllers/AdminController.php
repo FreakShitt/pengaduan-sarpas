@@ -377,10 +377,41 @@ class AdminController extends Controller
             'ditolak' => (clone $queryClone)->where('status', 'ditolak')->count(),
         ];
 
-        $lokasiList = Lokasi::where('aktif', true)->get();
+                $lokasiList = Lokasi::where('aktif', true)->get();
         $laporan = $pengaduans;
 
         return view('admin.laporan', compact('laporan', 'stats', 'lokasiList'));
+    }
+
+    /**
+     * Show pengaduan detail - Admin can view and update status like petugas
+     */
+    public function showPengaduan($id)
+    {
+        $pengaduan = Pengaduan::with(['user', 'petugas'])->findOrFail($id);
+        return view('admin.pengaduan_detail', compact('pengaduan'));
+    }
+
+    /**
+     * Update status pengaduan - Admin can update status and add notes
+     */
+    public function updateStatusPengaduan(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:diajukan,diproses,selesai,ditolak',
+            'catatan_admin' => 'nullable|string|max:500'
+        ]);
+
+        $pengaduan = Pengaduan::findOrFail($id);
+
+        $pengaduan->update([
+            'status' => $request->status,
+            'catatan_admin' => $request->catatan_admin,
+            'updated_at' => now()
+        ]);
+
+        return redirect()->route('admin.pengaduan.show', $id)
+            ->with('success', 'Status laporan berhasil diperbarui oleh Admin');
     }
 
     // Export Laporan to PDF

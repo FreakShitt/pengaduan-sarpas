@@ -85,4 +85,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
     Route::get('/laporan/export-pdf', [AdminController::class, 'exportPdf'])->name('admin.laporan.export-pdf');
     Route::get('/laporan/export-doc', [AdminController::class, 'exportDoc'])->name('admin.laporan.export-doc');
+    
+    // Pengaduan Detail & Update Status (Admin can manage like petugas)
+    Route::get('/pengaduan/{id}', [AdminController::class, 'showPengaduan'])->name('admin.pengaduan.show');
+    Route::put('/pengaduan/{id}/update-status', [AdminController::class, 'updateStatusPengaduan'])->name('admin.pengaduan.update-status');
 });

@@ -127,7 +127,7 @@
                         </thead>
                         <tbody>
                             @foreach($recentReports as $report)
-                            <tr>
+                            <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.pengaduan.show', $report->id) }}'">
                                 <td><strong>#{{ $report->id }}</strong></td>
                                 <td>{{ $report->user ? $report->user->nama_pengguna : '-' }}</td>
                                 <td>{{ $report->lokasi }}</td>

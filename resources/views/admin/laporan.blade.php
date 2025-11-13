@@ -153,7 +153,7 @@
                         </thead>
                         <tbody>
                             @foreach($laporan as $l)
-                            <tr>
+                            <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.pengaduan.show', $l->id) }}'">
                                 <td style="white-space: nowrap; color: var(--color-gray-600);">{{ $l->created_at->format('d/m/Y H:i') }}</td>
                                 <td><strong>{{ $l->user->nama_pengguna }}</strong></td>
                                 <td>
