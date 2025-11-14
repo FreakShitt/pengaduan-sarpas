@@ -669,24 +669,335 @@ form[action*="logout"] button[type="submit"]:hover {
 }
 
 /* ===========================
-   RESPONSIVE
+   UTILITIES
    =========================== */
+
+/* Table Wrapper for Horizontal Scroll */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: var(--space-6);
+}
+
+.table-responsive .mono-table {
+    min-width: 600px;
+}
+
+/* Divider */
+.mono-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: var(--space-8) 0;
+}
+
+/* Text Utilities */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-small {
+    font-size: var(--text-sm);
+}
+
+.text-muted {
+    color: var(--color-text-secondary);
+}
+
+/* Spacing Utilities */
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+/* Flex Utilities */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-4 {
+    gap: var(--space-4);
+}
+
+/* Grid Utilities */
+.grid {
+    display: grid;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Responsive wrapper for content */
+.responsive-wrapper {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+/* Mobile First - Base styles for mobile */
+
+/* Tablet and up (768px+) */
+@media (max-width: 1024px) {
+    :root {
+        --text-6xl: 3rem;
+        --text-5xl: 2.5rem;
+        --text-4xl: 2rem;
+        --text-3xl: 1.5rem;
+    }
+
+    .mono-container {
+        padding: 0 var(--space-6);
+    }
+
+    .mono-section {
+        padding: var(--space-12) 0;
+    }
+}
+
+/* Mobile (768px and below) */
 @media (max-width: 768px) {
     :root {
+        --text-6xl: 2.5rem;
         --text-5xl: 2rem;
         --text-4xl: 1.75rem;
         --text-3xl: 1.5rem;
+        --text-2xl: 1.25rem;
     }
 
     .mono-container {
         padding: 0 var(--space-4);
     }
 
-    .mono-nav-links {
+    .mono-section {
+        padding: var(--space-8) 0;
+    }
+
+    /* Header - Mobile Responsive */
+    .mono-header {
+        padding: var(--space-4) 0;
+    }
+
+    .mono-nav {
+        flex-direction: column;
         gap: var(--space-4);
     }
 
+    .mono-nav-links {
+        flex-direction: column;
+        gap: var(--space-3);
+        width: 100%;
+        text-align: center;
+    }
+
+    .mono-logo {
+        font-size: var(--text-lg);
+    }
+
+    /* Stats Grid - Mobile */
     .mono-stats-grid {
         grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+
+    .mono-stat-card {
+        padding: var(--space-6);
+    }
+
+    .mono-stat-number {
+        font-size: var(--text-4xl);
+    }
+
+    /* Table - Mobile Responsive */
+    .mono-table {
+        font-size: var(--text-sm);
+    }
+
+    .mono-table th,
+    .mono-table td {
+        padding: var(--space-2) var(--space-3);
+    }
+
+    /* Hide some table columns on mobile */
+    .mono-table th:not(:first-child):not(:nth-child(2)):not(:last-child),
+    .mono-table td:not(:first-child):not(:nth-child(2)):not(:last-child) {
+        display: none;
+    }
+
+    /* Buttons - Mobile */
+    .mono-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .mono-btn-sm {
+        width: auto;
+    }
+
+    /* Cards - Mobile */
+    .mono-card {
+        padding: var(--space-6);
+    }
+
+    /* Forms - Mobile */
+    .mono-form-group {
+        margin-bottom: var(--space-4);
+    }
+
+    .mono-input,
+    .mono-select,
+    .mono-textarea {
+        font-size: var(--text-base);
+    }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    :root {
+        --text-5xl: 1.75rem;
+        --text-4xl: 1.5rem;
+        --text-3xl: 1.25rem;
+    }
+
+    .mono-container {
+        padding: 0 var(--space-3);
+    }
+
+    h1 {
+        font-size: var(--text-4xl);
+    }
+
+    h2 {
+        font-size: var(--text-3xl);
+    }
+
+    .mono-stat-number {
+        font-size: var(--text-3xl);
+    }
+
+    .mono-btn {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--text-xs);
+    }
+}
+
+/* ===========================
+   RESPONSIVE UTILITIES
+   =========================== */
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+/* Show only on mobile */
+.show-mobile {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .show-mobile {
+        display: block !important;
+    }
+}
+
+/* Hamburger Menu for Mobile */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: var(--text-2xl);
+    cursor: pointer;
+    padding: var(--space-2);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .mono-nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--color-white);
+        border-bottom: var(--border-thin);
+        padding: var(--space-4);
+    }
+
+    .mono-nav-links.active {
+        display: flex;
+    }
+}
+
+/* Responsive Grid Utilities */
+@media (max-width: 768px) {
+    .grid-responsive {
+        grid-template-columns: 1fr !important;
+    }
+
+    .flex-responsive {
+        flex-direction: column !important;
+    }
+
+    .gap-responsive {
+        gap: var(--space-3) !important;
+    }
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+    a, button, .clickable {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+        font-size: 16px !important;
     }
 }

@@ -11,13 +11,24 @@
     <header class="mono-header">
         <div class="mono-container">
             <nav class="mono-nav">
-                <div class="mono-logo">SARPAS / PETUGAS</div>
-                <ul class="mono-nav-links">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div class="mono-logo">SARPAS / PETUGAS</div>
+                    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+                </div>
+                <ul class="mono-nav-links" id="navLinks">
                     <li><a href="{{ route('petugas.dashboard') }}" class="active">Dashboard</a></li>
                     <li><a href="{{ route('petugas.dashboard') }}?status=diajukan">Diajukan</a></li>
                     <li><a href="{{ route('petugas.dashboard') }}?status=diproses">Diproses</a></li>
+                    <li class="show-mobile" style="border-top: 1px solid var(--color-gray-200); padding-top: var(--space-3); margin-top: var(--space-3);">
+                        <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">{{ Auth::user()->nama_pengguna }}</div>
+                        <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Petugas</div>
+                        <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+                            @csrf
+                            <button type="submit" class="mono-btn mono-btn-sm" style="width: 100%;">Logout</button>
+                        </form>
+                    </li>
                 </ul>
-                <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="hide-mobile" style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">
                         <div style="font-size: 0.875rem; font-weight: 600;">{{ Auth::user()->nama_pengguna }}</div>
                         <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em;">Petugas</div>
@@ -115,38 +126,39 @@
                 </div>
 
                 @if($pengaduans->count() > 0)
-                    <table class="mono-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Pelapor</th>
-                                <th>Lokasi</th>
-                                <th>Barang</th>
-                                <th>Detail</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($pengaduans as $pengaduan)
-                            <tr>
-                                <td><strong>#{{ $pengaduan->id }}</strong></td>
-                                <td>{{ $pengaduan->user ? $pengaduan->user->nama_pengguna : '-' }}</td>
-                                <td>{{ $pengaduan->lokasi }}</td>
-                                <td>{{ $pengaduan->barang }}</td>
-                                <td style="max-width: 300px;">{{ Str::limit($pengaduan->detail_laporan, 60) }}</td>
-                                <td style="white-space: nowrap;">{{ $pengaduan->created_at->format('d M Y') }}</td>
-                                <td>
-                                    @if($pengaduan->status == 'diajukan')
-                                        <span class="mono-badge">{{ ucfirst($pengaduan->status) }}</span>
-                                    @elseif($pengaduan->status == 'diproses')
-                                        <span class="mono-badge">{{ ucfirst($pengaduan->status) }}</span>
-                                    @elseif($pengaduan->status == 'selesai')
-                                        <span class="mono-badge mono-badge-filled">{{ ucfirst($pengaduan->status) }}</span>
-                                    @else
-                                        <span class="mono-badge mono-badge-outlined">{{ ucfirst($pengaduan->status) }}</span>
-                                    @endif
+                    <div class="table-responsive">
+                        <table class="mono-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pelapor</th>
+                                    <th>Lokasi</th>
+                                    <th>Barang</th>
+                                    <th class="hide-mobile">Detail</th>
+                                    <th class="hide-mobile">Tanggal</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($pengaduans as $pengaduan)
+                                <tr>
+                                    <td><strong>#{{ $pengaduan->id }}</strong></td>
+                                    <td>{{ $pengaduan->user ? $pengaduan->user->nama_pengguna : '-' }}</td>
+                                    <td>{{ $pengaduan->lokasi }}</td>
+                                    <td>{{ $pengaduan->barang }}</td>
+                                    <td class="hide-mobile" style="max-width: 300px;">{{ Str::limit($pengaduan->detail_laporan, 60) }}</td>
+                                    <td class="hide-mobile" style="white-space: nowrap;">{{ $pengaduan->created_at->format('d M Y') }}</td>
+                                    <td>
+                                        @if($pengaduan->status == 'diajukan')
+                                            <span class="mono-badge">{{ ucfirst($pengaduan->status) }}</span>
+                                        @elseif($pengaduan->status == 'diproses')
+                                            <span class="mono-badge">{{ ucfirst($pengaduan->status) }}</span>
+                                        @elseif($pengaduan->status == 'selesai')
+                                            <span class="mono-badge mono-badge-filled">{{ ucfirst($pengaduan->status) }}</span>
+                                        @else
+                                            <span class="mono-badge mono-badge-outlined">{{ ucfirst($pengaduan->status) }}</span>
+                                        @endif
                                 </td>
                                 <td>
                                     <a href="{{ route('petugas.laporan.show', $pengaduan->id) }}" class="mono-btn mono-btn-sm">Detail</a>
@@ -155,6 +167,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
 
                     <!-- Pagination -->
                     <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 0.5rem;">
@@ -194,6 +207,12 @@
     </footer>
 
     <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
         // Smooth scroll
         document.documentElement.style.scrollBehavior = 'smooth';
 

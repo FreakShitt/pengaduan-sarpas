@@ -11,8 +11,11 @@
     <header class="mono-header">
         <div class="mono-container">
             <nav class="mono-nav">
-                <div class="mono-logo">SARPAS / ADMIN</div>
-                <ul class="mono-nav-links">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div class="mono-logo">SARPAS / ADMIN</div>
+                    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+                </div>
+                <ul class="mono-nav-links" id="navLinks">
                     <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ route('admin.laporan') }}" class="active">Laporan</a></li>
                     <li><a href="{{ route('admin.users.index') }}">Users</a></li>
@@ -20,8 +23,16 @@
                     <li><a href="{{ route('admin.lokasi.index') }}">Lokasi</a></li>
                     <li><a href="{{ route('admin.barang.index') }}">Barang</a></li>
                     <li><a href="{{ route('admin.item-requests.index') }}">Item Requests</a></li>
+                    <li class="show-mobile" style="border-top: 1px solid var(--color-gray-200); padding-top: var(--space-3); margin-top: var(--space-3);">
+                        <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">{{ Auth::user()->nama_pengguna }}</div>
+                        <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Administrator</div>
+                        <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+                            @csrf
+                            <button type="submit" class="mono-btn mono-btn-sm" style="width: 100%;">Logout</button>
+                        </form>
+                    </li>
                 </ul>
-                <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="hide-mobile" style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">
                         <div style="font-size: 0.875rem; font-weight: 600;">{{ Auth::user()->nama_pengguna }}</div>
                         <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em;">Administrator</div>
@@ -139,44 +150,45 @@
         <section class="mono-section" style="background: var(--color-gray-50);">
             <div class="mono-container">
                 @if($laporan->count() > 0)
-                    <table class="mono-table">
-                        <thead>
-                            <tr>
-                                <th>TANGGAL</th>
-                                <th>PENGADU</th>
-                                <th>LOKASI</th>
-                                <th>BARANG</th>
-                                <th>DETAIL</th>
-                                <th>STATUS</th>
-                                <th>PETUGAS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($laporan as $l)
-                            <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.pengaduan.show', $l->id) }}'">
-                                <td style="white-space: nowrap; color: var(--color-gray-600);">{{ $l->created_at->format('d/m/Y H:i') }}</td>
-                                <td><strong>{{ $l->user->nama_pengguna }}</strong></td>
-                                <td>
-                                    <span class="mono-badge">
-                                        {{ $l->lokasi }}
-                                    </span>
-                                </td>
-                                <td>{{ $l->barang }}</td>
-                                <td style="max-width: 300px; color: var(--color-gray-600);">{{ Str::limit($l->detail_laporan, 50) }}</td>
-                                <td>
-                                    @if($l->status === 'diajukan')
-                                        <span class="mono-badge">Diajukan</span>
-                                    @elseif($l->status === 'diproses')
-                                        <span class="mono-badge">Diproses</span>
-                                    @elseif($l->status === 'selesai')
-                                        <span class="mono-badge mono-badge-filled">Selesai</span>
-                                    @elseif($l->status === 'ditolak')
-                                        <span class="mono-badge mono-badge-outlined">Ditolak</span>
-                                    @else
-                                        <span class="mono-badge">{{ ucfirst($l->status ?? 'N/A') }}</span>
-                                    @endif
-                                </td>
-                                <td style="color: var(--color-gray-600);">{{ $l->petugas ? $l->petugas->nama_pengguna : '-' }}</td>
+                    <div class="table-responsive">
+                        <table class="mono-table">
+                            <thead>
+                                <tr>
+                                    <th>TANGGAL</th>
+                                    <th>PENGADU</th>
+                                    <th>LOKASI</th>
+                                    <th>BARANG</th>
+                                    <th class="hide-mobile">DETAIL</th>
+                                    <th>STATUS</th>
+                                    <th class="hide-mobile">PETUGAS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($laporan as $l)
+                                <tr style="cursor: pointer;" onclick="window.location='{{ route('admin.pengaduan.show', $l->id) }}'">
+                                    <td style="white-space: nowrap; color: var(--color-gray-600);">{{ $l->created_at->format('d/m/Y H:i') }}</td>
+                                    <td><strong>{{ $l->user->nama_pengguna }}</strong></td>
+                                    <td>
+                                        <span class="mono-badge">
+                                            {{ $l->lokasi }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $l->barang }}</td>
+                                    <td class="hide-mobile" style="max-width: 300px; color: var(--color-gray-600);">{{ Str::limit($l->detail_laporan, 50) }}</td>
+                                    <td>
+                                        @if($l->status === 'diajukan')
+                                            <span class="mono-badge">Diajukan</span>
+                                        @elseif($l->status === 'diproses')
+                                            <span class="mono-badge">Diproses</span>
+                                        @elseif($l->status === 'selesai')
+                                            <span class="mono-badge mono-badge-filled">Selesai</span>
+                                        @elseif($l->status === 'ditolak')
+                                            <span class="mono-badge mono-badge-outlined">Ditolak</span>
+                                        @else
+                                            <span class="mono-badge">{{ ucfirst($l->status ?? 'N/A') }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="hide-mobile" style="color: var(--color-gray-600);">{{ $l->petugas ? $l->petugas->nama_pengguna : '-' }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -205,6 +217,12 @@
     </footer>
 
     <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
         // Smooth scroll
         document.documentElement.style.scrollBehavior = 'smooth';
 

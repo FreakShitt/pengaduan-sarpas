@@ -8,7 +8,7 @@ Route::get('/', function () {
 });
 
 // LOGIN
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login', action: [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 // REGISTER
