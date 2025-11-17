@@ -22,6 +22,46 @@ Route::get('/dashboard', [AuthController::class, 'showDashboard'])
 // LOGOUT (support both GET and POST)
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
+// IMAGE SERVE ROUTE (public - untuk semua user)
+// Pakai format /img/ENCODED_FILENAME (tanpa extension di URL untuk bypass Nginx)
+Route::get('/img/{encoded}', function ($encoded) {
+    // Decode base64 URL-safe
+    $filename = base64_decode(strtr($encoded, '-_', '+/'));
+    
+    if (!$filename) {
+        abort(400, 'Invalid image code');
+    }
+    
+    // Sanitize
+    $filename = basename($filename);
+    
+    $filepath = public_path('uploads' . DIRECTORY_SEPARATOR . 'pengaduan' . DIRECTORY_SEPARATOR . $filename);
+    
+    if (!file_exists($filepath)) {
+        abort(404, 'Image not found');
+    }
+    
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    $extension = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+    
+    if (!in_array($extension, $allowedExtensions)) {
+        abort(403, 'Invalid file type');
+    }
+    
+    $mimeTypes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'webp' => 'image/webp'
+    ];
+    
+    return response()->file($filepath, [
+        'Content-Type' => $mimeTypes[$extension] ?? 'image/jpeg',
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->name('image.serve');
+
 // PENGADUAN (protected - untuk siswa & guru)
 use App\Http\Controllers\PengaduanController;
 

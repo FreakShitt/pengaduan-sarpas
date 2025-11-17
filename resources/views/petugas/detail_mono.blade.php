@@ -136,10 +136,20 @@
                         <div>
                             <h3 style="margin-bottom: 1.5rem;">FOTO BUKTI</h3>
                             <div style="border: 2px solid var(--color-black); padding: 1rem; background: var(--color-gray-50);">
-                                <img 
-                                    src="{{ asset('uploads/pengaduan/' . $pengaduan->gambar) }}" 
-                                    alt="Foto bukti pengaduan"
-                                    style="width: 100%; height: auto; display: block; filter: grayscale(100%) contrast(1.1);">
+                                @php
+                                    $encoded = strtr(base64_encode($pengaduan->gambar), '+/', '-_');
+                                    $imageUrl = route('image.serve', $encoded);
+                                @endphp
+                                <a href="{{ $imageUrl }}" target="_blank" style="display: block; cursor: pointer;" title="Klik untuk memperbesar gambar">
+                                    <img 
+                                        src="{{ $imageUrl }}" 
+                                        alt="Foto bukti pengaduan"
+                                        style="width: 100%; height: auto; display: block; filter: grayscale(100%) contrast(1.1); transition: opacity 0.2s;"
+                                        onmouseover="this.style.opacity='0.8'"
+                                        onmouseout="this.style.opacity='1'"
+                                        onerror="this.style.border='3px solid red'; this.alt='Gambar gagal dimuat'">
+                                </a>
+                                <p style="font-size: 0.875rem; color: var(--color-gray-600); margin-top: 0.5rem; text-align: center;">Klik gambar untuk memperbesar</p>
                             </div>
                         </div>
                         @endif
