@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login — Pengaduan Sarpas</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -43,7 +44,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
 
                 <div class="mono-form-group">
@@ -90,6 +91,35 @@
             <p>&copy; {{ date('Y') }} SARPAS</p>
         </div>
     </div>
+
+    <script>
+        // Auto-refresh CSRF token every 30 minutes to prevent expiration
+        setInterval(function() {
+            fetch('{{ route('login') }}', {
+                method: 'HEAD',
+                credentials: 'same-origin'
+            }).then(response => {
+                const csrfToken = response.headers.get('X-CSRF-TOKEN');
+                if (csrfToken) {
+                    document.querySelector('meta[name="csrf-token"]').setAttribute('content', csrfToken);
+                    const csrfInput = document.querySelector('input[name="_token"]');
+                    if (csrfInput) {
+                        csrfInput.value = csrfToken;
+                    }
+                }
+            });
+        }, 30 * 60 * 1000); // 30 minutes
+
+        // Handle form submission errors
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+            if (!csrfToken) {
+                e.preventDefault();
+                alert('Session expired. Halaman akan di-refresh.');
+                window.location.reload();
+            }
+        });
+    </script>
 
 </body>
 </html>

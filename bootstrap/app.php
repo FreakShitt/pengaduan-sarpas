@@ -24,5 +24,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Handle CSRF Token Mismatch
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Session expired. Please refresh and try again.'
+                ], 419);
+            }
+            
+            return redirect()->route('login')->with('error', 'Session expired. Silakan login kembali.');
+        });
     })->create();
