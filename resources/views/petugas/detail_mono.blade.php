@@ -137,7 +137,7 @@
                             <h3 style="margin-bottom: 1.5rem;">FOTO BUKTI</h3>
                             <div style="border: 2px solid var(--color-black); padding: 1rem; background: var(--color-gray-50);">
                                 <img 
-                                    src="{{ asset('storage/uploads/' . $pengaduan->gambar) }}" 
+                                    src="{{ asset('uploads/pengaduan/' . $pengaduan->gambar) }}" 
                                     alt="Foto bukti pengaduan"
                                     style="width: 100%; height: auto; display: block; filter: grayscale(100%) contrast(1.1);">
                             </div>
