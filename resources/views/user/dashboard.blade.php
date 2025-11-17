@@ -11,10 +11,8 @@
     <header class="mono-header">
         <div class="mono-container">
             <nav class="mono-nav">
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <div class="mono-logo">SARPAS</div>
-                    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
-                </div>
+                <div class="mono-logo">SARPAS</div>
+                <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
                 <ul class="mono-nav-links" id="navLinks">
                     <li><a href="{{ route('dashboard') }}" class="active">Dashboard</a></li>
                     <li><a href="{{ route('pengaduan.index') }}">Pengaduan</a></li>

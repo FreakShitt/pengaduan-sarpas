@@ -12,12 +12,21 @@
         <div class="mono-container">
             <nav class="mono-nav">
                 <div class="mono-logo">SARPAS</div>
-                <ul class="mono-nav-links">
+                <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+                <ul class="mono-nav-links" id="navLinks">
                     <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ route('pengaduan.index') }}" class="active">Pengaduan</a></li>
                     <li><a href="{{ route('pengaduan.create') }}">Buat Laporan</a></li>
+                    <li class="show-mobile" style="border-top: 1px solid var(--color-gray-200); padding-top: var(--space-3); margin-top: var(--space-3);">
+                        <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">{{ Auth::user()->nama_pengguna }}</div>
+                        <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">{{ Auth::user()->role }}</div>
+                        <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+                            @csrf
+                            <button type="submit" class="mono-btn mono-btn-sm" style="width: 100%;">Logout</button>
+                        </form>
+                    </li>
                 </ul>
-                <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="hide-mobile" style="display: flex; align-items: center; gap: 2rem;">
                     <div style="text-align: right;">
                         <div style="font-size: 0.875rem; font-weight: 600;">{{ Auth::user()->nama_pengguna }}</div>
                         <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em;">{{ Auth::user()->role }}</div>
@@ -159,6 +168,12 @@
     </footer>
 
     <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
         document.documentElement.style.scrollBehavior = 'smooth';
 
         const observer = new IntersectionObserver((entries) => {
