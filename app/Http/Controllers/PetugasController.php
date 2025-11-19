@@ -40,7 +40,7 @@ class PetugasController extends Controller
         $stats = [
             'total' => Pengaduan::count(),
             'diajukan' => Pengaduan::where('status', 'diajukan')->count(),
-            'diproses' => Pengaduan::where('status', 'diproses')->count(),
+            'disetujui' => Pengaduan::where('status', 'disetujui')->count(),
             'selesai' => Pengaduan::where('status', 'selesai')->count(),
             'ditolak' => Pengaduan::where('status', 'ditolak')->count(),
         ];
@@ -62,12 +62,18 @@ class PetugasController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
+        $pengaduan = Pengaduan::findOrFail($id);
+        
+        // Cek apakah pengaduan sudah ditolak oleh admin
+        if ($pengaduan->status === 'ditolak') {
+            return redirect()->route('petugas.laporan.show', $id)
+                ->with('error', 'Pengaduan yang sudah ditolak tidak dapat diproses lagi!');
+        }
+        
         $request->validate([
-            'status' => 'required|in:diajukan,diproses,selesai,ditolak',
+            'status' => 'required|in:diajukan,diproses,selesai',
             'catatan_petugas' => 'nullable|string|max:500'
         ]);
-        
-        $pengaduan = Pengaduan::findOrFail($id);
         
         $pengaduan->update([
             'status' => $request->status,

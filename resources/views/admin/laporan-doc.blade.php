@@ -75,7 +75,7 @@
         .status-pending { background: #FEF3C7; color: #92400E; }
         .status-diajukan { background: #FEF3C7; color: #92400E; }
         .status-proses { background: #DBEAFE; color: #1E40AF; }
-        .status-diproses { background: #DBEAFE; color: #1E40AF; }
+        .status-disetujui { background: #DBEAFE; color: #1E40AF; }
         .status-selesai { background: #D1FAE5; color: #065F46; }
         .status-ditolak { background: #FEE2E2; color: #991B1B; }
         .footer {
@@ -169,7 +169,7 @@
                             $statusClass = 'status-' . strtolower($p->status);
                             $statusText = $p->status;
                             if ($p->status == 'diajukan') $statusText = 'Pending';
-                            elseif ($p->status == 'proses' || $p->status == 'diproses') $statusText = 'Proses';
+                            elseif ($p->status == 'disetujui') $statusText = 'Disetujui';
                             elseif ($p->status == 'selesai') $statusText = 'Selesai';
                             elseif ($p->status == 'ditolak') $statusText = 'Ditolak';
                         @endphp

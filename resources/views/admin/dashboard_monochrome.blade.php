@@ -99,8 +99,8 @@
                         <div class="mono-stat-label">Diajukan</div>
                     </div>
                     <div class="mono-stat-card">
-                        <div class="mono-stat-number">{{ $processingReports }}</div>
-                        <div class="mono-stat-label">Diproses</div>
+                        <div class="mono-stat-number">{{ $approvedReports }}</div>
+                        <div class="mono-stat-label">Disetujui</div>
                     </div>
                     <div class="mono-stat-card">
                         <div class="mono-stat-number">{{ $completedReports }}</div>

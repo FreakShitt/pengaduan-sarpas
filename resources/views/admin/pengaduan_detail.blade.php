@@ -49,7 +49,7 @@
                     <div style="text-align: right;">
                         @if($pengaduan->status == 'diajukan')
                             <span class="mono-badge" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ ucfirst($pengaduan->status) }}</span>
-                        @elseif($pengaduan->status == 'diproses')
+                        @elseif($pengaduan->status == 'disetujui')
                             <span class="mono-badge" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ ucfirst($pengaduan->status) }}</span>
                         @elseif($pengaduan->status == 'selesai')
                             <span class="mono-badge mono-badge-filled" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ ucfirst($pengaduan->status) }}</span>
@@ -181,8 +181,7 @@
                                         <label class="mono-label" for="status">Status</label>
                                         <select id="status" name="status" class="mono-select" required>
                                             <option value="diajukan" {{ $pengaduan->status == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-                                            <option value="diproses" {{ $pengaduan->status == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                                            <option value="selesai" {{ $pengaduan->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                            <option value="disetujui" {{ $pengaduan->status == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                             <option value="ditolak" {{ $pengaduan->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                         </select>
                                     </div>

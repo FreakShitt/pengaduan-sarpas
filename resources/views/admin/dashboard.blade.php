@@ -90,8 +90,8 @@
                         <div class="mono-stat-label">Diajukan</div>
                     </div>
                     <div class="mono-stat-card">
-                        <div class="mono-stat-number">{{ $processingReports }}</div>
-                        <div class="mono-stat-label">Diproses</div>
+                        <div class="mono-stat-number">{{ $approvedReports }}</div>
+                        <div class="mono-stat-label">Disetujui</div>
                     </div>
                     <div class="mono-stat-card">
                         <div class="mono-stat-number">{{ $completedReports }}</div>
@@ -142,7 +142,7 @@
                                 style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--color-gray-200); border-radius: 8px; font-size: 0.9375rem; background: white;">
                                 <option value="">Semua Status</option>
                                 <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-                                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                                <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                 <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                             </select>

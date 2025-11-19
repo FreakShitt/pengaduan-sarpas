@@ -161,17 +161,27 @@
                             <div style="border: 2px solid var(--color-black); padding: 2rem; background: var(--color-white);">
                                 <h3 style="margin-bottom: 2rem;">UPDATE STATUS</h3>
                                 
+                                @if($pengaduan->status === 'ditolak')
+                                    <div class="mono-alert" style="background: #FEE2E2; color: #991B1B; padding: 1rem; margin-bottom: 1.5rem; border: 1px solid #FCA5A5;">
+                                        <strong>⚠️ Pengaduan Ditolak</strong><br>
+                                        Pengaduan ini telah ditolak oleh admin dan tidak dapat diproses lagi.
+                                    </div>
+                                @endif
+                                
                                 <form action="{{ route('petugas.laporan.update-status', $pengaduan->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 
                                     <div class="mono-form-group">
                                         <label class="mono-label" for="status">Status</label>
-                                        <select id="status" name="status" class="mono-select" required>
+                                        <select id="status" name="status" class="mono-select" required {{ $pengaduan->status === 'ditolak' ? 'disabled' : '' }}>
                                             <option value="diajukan" {{ $pengaduan->status == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                            <option value="disetujui" {{ $pengaduan->status == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                             <option value="diproses" {{ $pengaduan->status == 'diproses' ? 'selected' : '' }}>Diproses</option>
                                             <option value="selesai" {{ $pengaduan->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                            <option value="ditolak" {{ $pengaduan->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                            @if($pengaduan->status === 'ditolak')
+                                                <option value="ditolak" selected disabled>Ditolak (Tidak dapat diubah)</option>
+                                            @endif
                                         </select>
                                     </div>
 
@@ -182,14 +192,15 @@
                                             name="catatan_petugas" 
                                             class="mono-textarea"
                                             placeholder="Berikan catatan atau update progress..."
-                                            style="min-height: 150px;">{{ old('catatan_petugas', $pengaduan->catatan_petugas) }}</textarea>
+                                            style="min-height: 150px;"
+                                            {{ $pengaduan->status === 'ditolak' ? 'disabled' : '' }}>{{ old('catatan_petugas', $pengaduan->catatan_petugas) }}</textarea>
                                         <p style="font-size: 0.875rem; color: var(--color-gray-600); margin-top: 0.5rem;">
                                             Max 500 karakter
                                         </p>
                                     </div>
 
-                                    <button type="submit" class="mono-btn mono-btn-primary" style="width: 100%;">
-                                        Update
+                                    <button type="submit" class="mono-btn mono-btn-primary" style="width: 100%;" {{ $pengaduan->status === 'ditolak' ? 'disabled' : '' }}>
+                                        {{ $pengaduan->status === 'ditolak' ? 'Tidak Dapat Diupdate' : 'Update' }}
                                     </button>
                                 </form>
 

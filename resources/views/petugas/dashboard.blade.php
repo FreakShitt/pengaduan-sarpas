@@ -55,8 +55,8 @@
                         <div class="mono-stat-label">Diajukan</div>
                     </div>
                     <div class="mono-stat-card">
-                        <div class="mono-stat-number">{{ $stats['diproses'] }}</div>
-                        <div class="mono-stat-label">Diproses</div>
+                        <div class="mono-stat-number">{{ $stats['disetujui'] }}</div>
+                        <div class="mono-stat-label">Disetujui</div>
                     </div>
                     <div class="mono-stat-card">
                         <div class="mono-stat-number">{{ $stats['selesai'] }}</div>
@@ -84,6 +84,7 @@
                             <select name="status" class="mono-select">
                                 <option value="">Semua Status</option>
                                 <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                 <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>

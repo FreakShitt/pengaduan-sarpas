@@ -22,7 +22,7 @@ class AdminController extends Controller
         $totalSiswa = User::where('role', 'siswa')->count();
         $totalGuru = User::where('role', 'guru')->count();
         $pendingReports = Pengaduan::where('status', 'diajukan')->count();
-        $processingReports = Pengaduan::where('status', 'diproses')->count();
+        $approvedReports = Pengaduan::where('status', 'disetujui')->count();
         $completedReports = Pengaduan::where('status', 'selesai')->count();
         $rejectedReports = Pengaduan::where('status', 'ditolak')->count();
         $totalLokasi = Lokasi::where('aktif', true)->count();
@@ -86,7 +86,7 @@ class AdminController extends Controller
             'totalSiswa',
             'totalGuru',
             'pendingReports',
-            'processingReports',
+            'approvedReports',
             'completedReports',
             'rejectedReports',
             'totalLokasi',
@@ -107,7 +107,7 @@ class AdminController extends Controller
             $p->total_handled = Pengaduan::where('catatan_petugas', '!=', null)
                 ->count();
             $p->completed = Pengaduan::where('status', 'selesai')->count();
-            $p->in_progress = Pengaduan::where('status', 'diproses')->count();
+            $p->in_progress = Pengaduan::where('petugas_id', $p->id)->whereIn('status', ['disetujui', 'selesai'])->count();
         }
 
         return view('admin.petugas.index', compact('petugas'));
@@ -372,7 +372,7 @@ class AdminController extends Controller
         $stats = [
             'total' => $queryClone->count(),
             'diajukan' => (clone $queryClone)->where('status', 'diajukan')->count(),
-            'diproses' => (clone $queryClone)->where('status', 'diproses')->count(),
+            'disetujui' => (clone $queryClone)->where('status', 'disetujui')->count(),
             'selesai' => (clone $queryClone)->where('status', 'selesai')->count(),
             'ditolak' => (clone $queryClone)->where('status', 'ditolak')->count(),
         ];
@@ -398,7 +398,7 @@ class AdminController extends Controller
     public function updateStatusPengaduan(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:diajukan,diproses,selesai,ditolak',
+            'status' => 'required|in:diajukan,disetujui,ditolak',
             'catatan_admin' => 'nullable|string|max:500'
         ]);
 

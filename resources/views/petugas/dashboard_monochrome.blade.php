@@ -18,6 +18,7 @@
                 <ul class="mono-nav-links" id="navLinks">
                     <li><a href="{{ route('petugas.dashboard') }}" class="active">Dashboard</a></li>
                     <li><a href="{{ route('petugas.dashboard') }}?status=diajukan">Diajukan</a></li>
+                    <li><a href="{{ route('petugas.dashboard') }}?status=disetujui">Disetujui</a></li>
                     <li><a href="{{ route('petugas.dashboard') }}?status=diproses">Diproses</a></li>
                     <li class="show-mobile" style="border-top: 1px solid var(--color-gray-200); padding-top: var(--space-3); margin-top: var(--space-3);">
                         <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">{{ Auth::user()->nama_pengguna }}</div>
@@ -68,8 +69,8 @@
                         <div class="mono-stat-label">Diajukan</div>
                     </div>
                     <div class="mono-stat-card">
-                        <div class="mono-stat-number">{{ $stats['diproses'] }}</div>
-                        <div class="mono-stat-label">Diproses</div>
+                        <div class="mono-stat-number">{{ $stats['disetujui'] }}</div>
+                        <div class="mono-stat-label">Disetujui</div>
                     </div>
                     <div class="mono-stat-card">
                         <div class="mono-stat-number">{{ $stats['selesai'] }}</div>
@@ -97,6 +98,7 @@
                             <select name="status" class="mono-select">
                                 <option value="">Semua Status</option>
                                 <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                 <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>

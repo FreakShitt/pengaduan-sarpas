@@ -71,8 +71,8 @@
                         <div class="mono-stat-label">Diajukan</div>
                     </div>
                     <div class="mono-stat-card">
-                        <div class="mono-stat-number">{{ $stats['diproses'] }}</div>
-                        <div class="mono-stat-label">Diproses</div>
+                        <div class="mono-stat-number">{{ $stats['disetujui'] }}</div>
+                        <div class="mono-stat-label">Disetujui</div>
                     </div>
                     <div class="mono-stat-card">
                         <div class="mono-stat-number">{{ $stats['selesai'] }}</div>
@@ -106,7 +106,7 @@
                             <select name="status" style="width: 100%; padding: 0.75rem; border: 2px solid var(--color-gray-200); border-radius: 8px; font-size: 0.9375rem; background: white;">
                                 <option value="">Semua</option>
                                 <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-                                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                                <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                 <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                             </select>
@@ -178,8 +178,8 @@
                                     <td>
                                         @if($l->status === 'diajukan')
                                             <span class="mono-badge">Diajukan</span>
-                                        @elseif($l->status === 'diproses')
-                                            <span class="mono-badge">Diproses</span>
+                                        @elseif($l->status === 'disetujui')
+                                            <span class="mono-badge">Disetujui</span>
                                         @elseif($l->status === 'selesai')
                                             <span class="mono-badge mono-badge-filled">Selesai</span>
                                         @elseif($l->status === 'ditolak')
