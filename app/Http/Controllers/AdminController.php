@@ -577,4 +577,87 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Item request berhasil ditolak.');
     }
+
+    // Backup Management
+    public function backups()
+    {
+        $backupPath = storage_path('app/backups');
+        
+        // Create directory if not exists
+        if (!file_exists($backupPath)) {
+            mkdir($backupPath, 0755, true);
+        }
+
+        // Get all backup files
+        $files = glob($backupPath . '/*.sql');
+        $backups = [];
+
+        foreach ($files as $file) {
+            $backups[] = [
+                'name' => basename($file),
+                'size' => $this->formatBytes(filesize($file)),
+                'date' => date('Y-m-d H:i:s', filemtime($file)),
+                'path' => $file
+            ];
+        }
+
+        // Sort by date descending
+        usort($backups, function($a, $b) {
+            return strtotime($b['date']) - strtotime($a['date']);
+        });
+
+        return view('admin.backups.index', compact('backups'));
+    }
+
+    public function createBackup()
+    {
+        try {
+            \Artisan::call('backup:database');
+            $output = \Artisan::output();
+            
+            return redirect()->route('admin.backups.index')
+                ->with('success', 'Backup berhasil dibuat! ' . strip_tags($output));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.backups.index')
+                ->with('error', 'Backup gagal: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadBackup($filename)
+    {
+        $filepath = storage_path('app/backups/' . $filename);
+        
+        if (!file_exists($filepath)) {
+            return redirect()->route('admin.backups.index')
+                ->with('error', 'File backup tidak ditemukan!');
+        }
+
+        return response()->download($filepath);
+    }
+
+    public function deleteBackup($filename)
+    {
+        $filepath = storage_path('app/backups/' . $filename);
+        
+        if (!file_exists($filepath)) {
+            return redirect()->route('admin.backups.index')
+                ->with('error', 'File backup tidak ditemukan!');
+        }
+
+        unlink($filepath);
+        
+        return redirect()->route('admin.backups.index')
+            ->with('success', 'Backup berhasil dihapus!');
+    }
+
+    private function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= (1 << (10 * $pow));
+        
+        return round($bytes, $precision) . ' ' . $units[$pow];
+    }
 }   

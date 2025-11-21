@@ -23,6 +23,7 @@
                     <li><a href="{{ route('admin.lokasi.index') }}">Lokasi</a></li>
                     <li><a href="{{ route('admin.barang.index') }}">Barang</a></li>
                     <li><a href="{{ route('admin.item-requests.index') }}">Item Requests</a></li>
+                    <li><a href="{{ route('admin.backups.index') }}">Backup</a></li>
                     <li class="show-mobile" style="border-top: 1px solid var(--color-gray-200); padding-top: var(--space-3); margin-top: var(--space-3);">
                         <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">{{ Auth::user()->nama_pengguna }}</div>
                         <div style="font-size: 0.75rem; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Administrator</div>

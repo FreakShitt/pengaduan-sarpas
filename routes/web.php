@@ -129,4 +129,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Pengaduan Detail & Update Status (Admin can manage like petugas)
     Route::get('/pengaduan/{id}', [AdminController::class, 'showPengaduan'])->name('admin.pengaduan.show');
     Route::put('/pengaduan/{id}/update-status', [AdminController::class, 'updateStatusPengaduan'])->name('admin.pengaduan.update-status');
+    
+    // Backup Management
+    Route::get('/backups', [AdminController::class, 'backups'])->name('admin.backups.index');
+    Route::post('/backups/create', [AdminController::class, 'createBackup'])->name('admin.backups.create');
+    Route::get('/backups/download/{filename}', [AdminController::class, 'downloadBackup'])->name('admin.backups.download');
+    Route::delete('/backups/{filename}', [AdminController::class, 'deleteBackup'])->name('admin.backups.delete');
 });
