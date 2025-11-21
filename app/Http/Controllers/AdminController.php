@@ -267,7 +267,8 @@ class AdminController extends Controller
             }
         }
         
-        $barang = $barangQuery->get();
+        // Add pagination with 10 items per page
+        $barang = $barangQuery->paginate(10)->withQueryString();
         
         return view('admin.barang.index', compact('barang', 'lokasi'));
     }
@@ -570,4 +571,4 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Item request berhasil ditolak.');
     }
-}
+}   

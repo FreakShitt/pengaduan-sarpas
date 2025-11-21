@@ -135,6 +135,7 @@
                     <table class="mono-table">
                         <thead>
                             <tr>
+                                <th style="width: 60px; text-align: center;">NO</th>
                                 <th>NAMA BARANG</th>
                                 <th>LOKASI</th>
                                 <th>DESKRIPSI</th>
@@ -143,8 +144,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($barang as $b)
+                            @foreach($barang as $index => $b)
                             <tr>
+                                <td style="text-align: center; font-weight: 600;">{{ $barang->firstItem() + $index }}</td>
                                 <td><strong>{{ $b->nama_barang }}</strong></td>
                                 <td>
                                     <span class="mono-badge">
@@ -178,6 +180,11 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <!-- Pagination -->
+                    <div style="margin-top: 2rem;">
+                        {{ $barang->links() }}
+                    </div>
                 @else
                     <div style="text-align: center; padding: 6rem 0; border: 2px solid var(--color-gray-200);">
                         <div style="font-size: 6rem; margin-bottom: 1.5rem; opacity: 0.2;">📦</div>
