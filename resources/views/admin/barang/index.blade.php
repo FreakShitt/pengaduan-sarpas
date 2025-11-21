@@ -101,8 +101,8 @@
         <section class="mono-section">
             <div class="mono-container">
                 <form method="GET" action="{{ route('admin.barang.index') }}" style="margin-bottom: 3rem;">
-                    <div style="display: flex; gap: 1rem; align-items: end;">
-                        <div style="flex: 1; max-width: 350px;">
+                    <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                        <div style="flex: 1; max-width: 350px; min-width: 200px;">
                             <label for="lokasi" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-gray-700); margin-bottom: 0.5rem;">
                                 Filter by Lokasi
                             </label>
@@ -117,6 +117,19 @@
                                         </option>
                                     @endif
                                 @endforeach
+                            </select>
+                        </div>
+                        <div style="max-width: 150px;">
+                            <label for="per_page" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-gray-700); margin-bottom: 0.5rem;">
+                                Per Halaman
+                            </label>
+                            <select name="per_page" id="per_page" 
+                                style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--color-gray-200); border-radius: 8px; font-size: 0.9375rem; background: white;">
+                                <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                             </select>
                         </div>
                         <button type="submit" class="mono-btn">Filter</button>
@@ -181,10 +194,8 @@
                         </tbody>
                     </table>
 
-                    <!-- Pagination -->
-                    <div style="margin-top: 2rem;">
-                        {{ $barang->links() }}
-                    </div>
+                    <!-- Custom Pagination -->
+                    <x-pagination :paginator="$barang" />
                 @else
                     <div style="text-align: center; padding: 6rem 0; border: 2px solid var(--color-gray-200);">
                         <div style="font-size: 6rem; margin-bottom: 1.5rem; opacity: 0.2;">📦</div>

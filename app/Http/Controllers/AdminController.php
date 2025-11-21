@@ -267,8 +267,14 @@ class AdminController extends Controller
             }
         }
         
-        // Add pagination with 10 items per page
-        $barang = $barangQuery->paginate(10)->withQueryString();
+        // Per page options (default 15, allow 10, 25, 50, 100)
+        $perPage = $request->input('per_page', 15);
+        if (!in_array($perPage, [10, 15, 25, 50, 100])) {
+            $perPage = 15;
+        }
+        
+        // Add pagination with configurable items per page
+        $barang = $barangQuery->paginate($perPage)->withQueryString();
         
         return view('admin.barang.index', compact('barang', 'lokasi'));
     }
