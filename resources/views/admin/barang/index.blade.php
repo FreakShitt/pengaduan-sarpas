@@ -234,10 +234,12 @@
             observer.observe(section);
         });
 
-        // Auto hide alerts after 5 seconds
+        // Auto hide success/error alerts after 5 seconds (only the notification boxes, not table badges)
         setTimeout(() => {
-            const alerts = document.querySelectorAll('[style*="color-green-50"], [style*="color-red-50"]');
-            alerts.forEach(alert => {
+            const successAlerts = document.querySelectorAll('section > div > div[style*="color-green-50"][style*="border-left"]');
+            const errorAlerts = document.querySelectorAll('section > div > div[style*="color-red-50"][style*="border-left"]');
+            
+            [...successAlerts, ...errorAlerts].forEach(alert => {
                 alert.style.transition = 'opacity 0.5s';
                 alert.style.opacity = '0';
                 setTimeout(() => alert.remove(), 500);
