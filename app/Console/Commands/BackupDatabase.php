@@ -36,13 +36,13 @@ class BackupDatabase extends Command
             $password = config('database.connections.mysql.password');
             $port = config('database.connections.mysql.port', 3306);
 
-            // Build mysqldump command
+            // Build mysqldump command (without password in command for security)
             $command = sprintf(
-                'mysqldump --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --events %s > %s 2>&1',
+                'MYSQL_PWD=%s mysqldump --host=%s --port=%s --user=%s --single-transaction --routines --triggers --events %s > %s 2>&1',
+                escapeshellarg($password),
                 escapeshellarg($host),
                 escapeshellarg($port),
                 escapeshellarg($username),
-                escapeshellarg($password),
                 escapeshellarg($database),
                 escapeshellarg($filepath)
             );
