@@ -36,19 +36,19 @@ class BackupDatabase extends Command
             $password = config('database.connections.mysql.password');
             $port = config('database.connections.mysql.port', 3306);
 
-            // Build mysqldump command (without password in command for security)
+            // Build mysqldump command
             $command = sprintf(
-                'MYSQL_PWD=%s mysqldump --host=%s --port=%s --user=%s --single-transaction --routines --triggers --events %s > %s 2>&1',
-                escapeshellarg($password),
-                escapeshellarg($host),
-                escapeshellarg($port),
-                escapeshellarg($username),
-                escapeshellarg($database),
-                escapeshellarg($filepath)
+                'mysqldump --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --events %s',
+                $host,
+                $port,
+                $username,
+                $password,
+                $database
             );
 
             // Execute backup
-            exec($command, $output, $returnVar);
+            $fullCommand = $command . ' > ' . $filepath . ' 2>&1';
+            exec($fullCommand, $output, $returnVar);
 
             if ($returnVar !== 0) {
                 $this->error('Backup failed!');
