@@ -38,21 +38,23 @@ class BackupDatabase extends Command
 
             // Build mysqldump command
             $command = sprintf(
-                'mysqldump --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --events %s',
-                $host,
-                $port,
-                $username,
-                $password,
-                $database
+                'mysqldump --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --events %s > %s 2>&1',
+                escapeshellarg($host),
+                escapeshellarg($port),
+                escapeshellarg($username),
+                escapeshellarg($password),
+                escapeshellarg($database),
+                escapeshellarg($filepath)
             );
 
             // Execute backup
-            $fullCommand = $command . ' > ' . $filepath . ' 2>&1';
-            exec($fullCommand, $output, $returnVar);
+            exec($command, $output, $returnVar);
 
             if ($returnVar !== 0) {
                 $this->error('Backup failed!');
+                $this->error('Command: ' . str_replace($password, '****', $command));
                 $this->error('Output: ' . implode("\n", $output));
+                $this->error('Return code: ' . $returnVar);
                 return 1;
             }
 
