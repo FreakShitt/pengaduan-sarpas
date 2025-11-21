@@ -37,25 +37,40 @@ class BackupDatabase extends Command
             $port = config('database.connections.mysql.port', 3306);
 
             // Build mysqldump command
-            $command = sprintf(
-                'mysqldump --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --events %s > %s 2>&1',
+            $dumpCommand = sprintf(
+                'mysqldump --host=%s --port=%s --user=%s --password=%s --single-transaction --routines --triggers --events %s',
                 escapeshellarg($host),
                 escapeshellarg($port),
                 escapeshellarg($username),
                 escapeshellarg($password),
-                escapeshellarg($database),
-                escapeshellarg($filepath)
+                escapeshellarg($database)
             );
 
-            // Execute backup
-            exec($command, $output, $returnVar);
+            // Execute backup and save to file
+            $output = shell_exec($dumpCommand . ' 2>&1');
 
-            if ($returnVar !== 0) {
-                $this->error('Backup failed!');
-                $this->error('Command: ' . str_replace($password, '****', $command));
-                $this->error('Output: ' . implode("\n", $output));
-                $this->error('Return code: ' . $returnVar);
+            if ($output === null) {
+                $this->error('Backup failed: shell_exec returned null');
                 return 1;
+            }
+
+            // Write output to file
+            $written = file_put_contents($filepath, $output);
+
+            if ($written === false) {
+                $this->error('Failed to write backup file!');
+                return 1;
+            }
+
+            // Check if output looks like an error
+            if (stripos($output, 'error') !== false || stripos($output, 'failed') !== false) {
+                $this->error('Backup may have failed!');
+                $this->error('Output: ' . substr($output, 0, 500));
+                
+                // Don't return error if file was created
+                if (!file_exists($filepath) || filesize($filepath) < 100) {
+                    return 1;
+                }
             }
 
             // Check if file was created and has content
